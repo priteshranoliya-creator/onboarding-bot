@@ -1,6 +1,6 @@
 const sheets = require('../sheets/client');
 const blocks = require('./blocks');
-const { getCheckedCount, getTotalItemCount } = require('./checklist');
+const { getCheckedCount, getTotalItemCount } = require('./checklist-items');
 const { isWithinDaysIST, daysFromTodayIST } = require('../utils/date');
 
 function register(app) {

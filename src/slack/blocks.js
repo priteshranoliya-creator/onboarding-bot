@@ -1,5 +1,5 @@
 const { formatLong } = require('../utils/date');
-const { CHECKLIST_CATEGORIES } = require('./checklist');
+const { CHECKLIST_CATEGORIES } = require('./checklist-items');
 
 // ─── D-1 Announcement in #hr-onboarding ─────────────────────────
 
@@ -287,7 +287,7 @@ function joineeCheckNotificationBlocks(joinerName, message) {
 // ─── Slash Command: /onboard status ──────────────────────────────
 
 function onboardStatusBlocks(joiner, state) {
-  const { CHECKLIST_CATEGORIES: cats } = require('./checklist');
+  const { CHECKLIST_CATEGORIES: cats } = require('./checklist-items');
   const blocks = [
     {
       type: 'header',
@@ -333,7 +333,7 @@ function onboardStatusBlocks(joiner, state) {
 // ─── Slash Command: /checklist pending items ─────────────────────
 
 function pendingItemsBlocks(joiner, state) {
-  const { CHECKLIST_CATEGORIES: cats } = require('./checklist');
+  const { CHECKLIST_CATEGORIES: cats } = require('./checklist-items');
   const blocks = [
     {
       type: 'header',
