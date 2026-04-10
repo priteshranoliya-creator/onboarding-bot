@@ -1,0 +1,22 @@
+{
+  "name": "devx-onboarding-bot",
+  "version": "1.0.0",
+  "description": "Slack onboarding bot for devx Ai Labs",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "@slack/bolt": "^4.1.0",
+    "@slack/web-api": "^7.8.0",
+    "dotenv": "^16.4.7",
+    "googleapis": "^144.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
