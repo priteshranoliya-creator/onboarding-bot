@@ -18,7 +18,19 @@ async function handler(req, res) {
   try {
     // Verify webhook secret
     if (req.body?.secret !== config.WEBHOOK_SECRET) {
-      return res.status(401).json({ error: 'Invalid secret' });
+      return res.status(401).json({
+        error: 'Invalid secret',
+        debug: {
+          receivedType: typeof req.body?.secret,
+          receivedLength: (req.body?.secret || '').length,
+          receivedStart: (req.body?.secret || '').substring(0, 8),
+          expectedSet: !!config.WEBHOOK_SECRET,
+          expectedLength: (config.WEBHOOK_SECRET || '').length,
+          expectedStart: (config.WEBHOOK_SECRET || '').substring(0, 8),
+          bodyType: typeof req.body,
+          bodyKeys: Object.keys(req.body || {}),
+        },
+      });
     }
 
     const { joiner, emailsSent } = req.body;
