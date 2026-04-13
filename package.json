@@ -4,8 +4,8 @@
   "description": "Slack onboarding bot for devx Ai Labs",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js"
+    "start": "node scripts/server.js",
+    "dev": "nodemon scripts/server.js"
   },
   "dependencies": {
     "@slack/bolt": "^4.1.0",
