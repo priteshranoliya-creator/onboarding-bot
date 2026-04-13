@@ -1,5 +1,11 @@
 {
   "version": 2,
+  "builds": [
+    { "src": "api/**/*.js", "use": "@vercel/node" }
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/$1" }
+  ],
   "crons": [
     { "path": "/api/cron/joining-day", "schedule": "0 4 * * *" },
     { "path": "/api/cron/smart-alerts", "schedule": "0 5 * * 1" }
