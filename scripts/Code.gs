@@ -161,94 +161,98 @@ function buildJoinerData(row, joiningDate) {
 // Sent to: Employee Personal Email
 // ============================================================
 function sendWelcomeEmail(joiner, config) {
-  const subject = `🎉 Welcome to devxlabs.ai, ${joiner.firstName}!`;
+  const subject = `Welcome to devxlabs.ai, ${joiner.firstName}!`;
 
   const body = `
-<div style="font-family: Arial, sans-serif; max-width: 640px; margin: 0 auto; color: #222; line-height: 1.7;">
+<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; max-width: 640px; margin: 0 auto; color: #1f2937; line-height: 1.6; background: #f9fafb; padding: 20px;">
 
-  <div style="background: #111; padding: 28px; text-align: center; border-radius: 8px 8px 0 0;">
-    <h1 style="color: #fff; margin: 0; font-size: 22px; letter-spacing: 0.5px;">🚀 Welcome to devxlabs.ai</h1>
-  </div>
+  <div style="background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
 
-  <div style="padding: 30px; background: #fff; border: 1px solid #ddd; border-top: none; border-radius: 0 0 8px 8px;">
+    <!-- HEADER -->
+    <div style="background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); padding: 36px 32px; text-align: center;">
+      <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.3px;">Welcome to devxlabs.ai</h1>
+      <p style="color: #bfdbfe; margin: 8px 0 0 0; font-size: 14px;">We're excited to have you on board</p>
+    </div>
 
-    <p>Hi <strong>${joiner.firstName}</strong>,</p>
-    <p>Welcome to devxlabs.ai. 🎉</p>
-    <p>We're delighted to have you join our team and look forward to working with you. We hope your journey with us will be a rewarding and enriching experience. ✨</p>
+    <!-- BODY -->
+    <div style="padding: 32px;">
 
-    <p>Please find below the details for your first day:</p>
+      <p style="margin: 0 0 12px 0;">Hi <strong>${joiner.firstName}</strong>,</p>
+      <p style="margin: 0 0 14px 0;">Welcome to devxlabs.ai! We're delighted to have you join our team and look forward to working with you. We hope your journey with us will be a rewarding and enriching experience.</p>
 
-    <!-- JOINING DETAILS -->
-    <table style="width: 100%; border-collapse: collapse; margin: 16px 0; border: 1px solid #ddd;">
-      <tr style="border-bottom: 1px solid #ddd;">
-        <td style="padding: 12px 16px; font-weight: bold; width: 170px; background: #f5f5f5;">📍 Office Address</td>
-        <td style="padding: 12px 16px;">${config.officeAddress}</td>
-      </tr>
-      <tr style="border-bottom: 1px solid #ddd;">
-        <td style="padding: 12px 16px; font-weight: bold; background: #f5f5f5;">🕐 Reporting Time</td>
-        <td style="padding: 12px 16px;">${config.reportingTime} <span style="color: #888;">(Only for tomorrow)</span></td>
-      </tr>
-      <tr style="border-bottom: 1px solid #ddd;">
-        <td style="padding: 12px 16px; font-weight: bold; background: #f5f5f5;">📅 Reporting Date</td>
-        <td style="padding: 12px 16px;">${joiner.joiningDate}</td>
-      </tr>
-      <tr style="border-bottom: 1px solid #ddd;">
-        <td style="padding: 12px 16px; font-weight: bold; background: #f5f5f5;">📆 Reporting Day</td>
-        <td style="padding: 12px 16px;">${joiner.joiningDay}</td>
-      </tr>
-      <tr style="border-bottom: 1px solid #ddd;">
-        <td style="padding: 12px 16px; font-weight: bold; background: #f5f5f5;">🤝 Joining Buddy</td>
-        <td style="padding: 12px 16px;">${joiner.buddyName}</td>
-      </tr>
-      <tr>
-        <td style="padding: 12px 16px; font-weight: bold; background: #f5f5f5;">👤 HR Contact</td>
-        <td style="padding: 12px 16px;">${config.hrContactName}</td>
-      </tr>
-    </table>
+      <p style="margin: 20px 0 12px 0; font-weight: 600; color: #111827;">Your first day details</p>
 
-    <p>You will be joining the "<strong>${joiner.podName}</strong>" POD, Led by <strong>${joiner.podLeader}</strong> 💼</p>
-
-    <!-- LOGIN CREDENTIALS -->
-    <div style="background: #f5f5f5; border-left: 4px solid #222; padding: 16px 20px; margin: 20px 0;">
-      <h3 style="margin: 0 0 10px 0; color: #111; font-size: 15px;">🔑 Login Credentials</h3>
-      <table style="border-collapse: collapse;">
-        <tr>
-          <td style="padding: 4px 14px 4px 0; font-weight: bold;">Work Email:</td>
-          <td style="padding: 4px 0;">${joiner.workEmail}</td>
+      <table style="width: 100%; border-collapse: collapse; margin: 0 0 20px 0; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;">
+        <tr style="border-bottom: 1px solid #e5e7eb;">
+          <td style="padding: 12px 16px; font-weight: 600; width: 170px; background: #f9fafb; color: #374151;">Office Address</td>
+          <td style="padding: 12px 16px;">${config.officeAddress}</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e5e7eb;">
+          <td style="padding: 12px 16px; font-weight: 600; background: #f9fafb; color: #374151;">Reporting Time</td>
+          <td style="padding: 12px 16px;">${config.reportingTime} <span style="color: #6b7280;">(Only for tomorrow)</span></td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e5e7eb;">
+          <td style="padding: 12px 16px; font-weight: 600; background: #f9fafb; color: #374151;">Reporting Date</td>
+          <td style="padding: 12px 16px;">${joiner.joiningDate}</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e5e7eb;">
+          <td style="padding: 12px 16px; font-weight: 600; background: #f9fafb; color: #374151;">Reporting Day</td>
+          <td style="padding: 12px 16px;">${joiner.joiningDay}</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e5e7eb;">
+          <td style="padding: 12px 16px; font-weight: 600; background: #f9fafb; color: #374151;">Joining Buddy</td>
+          <td style="padding: 12px 16px;">${joiner.buddyName}</td>
         </tr>
         <tr>
-          <td style="padding: 4px 14px 4px 0; font-weight: bold;">Password:</td>
-          <td style="padding: 4px 0;"><code style="background: #eee; padding: 3px 10px; border-radius: 3px; border: 1px solid #ccc; font-size: 14px;">${joiner.tempPassword}</code></td>
+          <td style="padding: 12px 16px; font-weight: 600; background: #f9fafb; color: #374151;">HR Contact</td>
+          <td style="padding: 12px 16px;">${config.hrContactName}</td>
         </tr>
       </table>
+
+      <p style="margin: 0 0 20px 0;">You will be joining the <strong style="color: #2563eb;">${joiner.podName}</strong> POD, led by <strong>${joiner.podLeader}</strong>.</p>
+
+      <!-- LOGIN CREDENTIALS -->
+      <div style="background: #eff6ff; border-left: 4px solid #2563eb; padding: 18px 22px; margin: 0 0 24px 0; border-radius: 6px;">
+        <p style="margin: 0 0 12px 0; color: #1e40af; font-size: 15px; font-weight: 600;">Login Credentials</p>
+        <table style="border-collapse: collapse;">
+          <tr>
+            <td style="padding: 3px 14px 3px 0; font-weight: 600; color: #374151;">Work Email:</td>
+            <td style="padding: 3px 0;"><a href="mailto:${joiner.workEmail}" style="color: #2563eb; text-decoration: none;">${joiner.workEmail}</a></td>
+          </tr>
+          <tr>
+            <td style="padding: 3px 14px 3px 0; font-weight: 600; color: #374151;">Password:</td>
+            <td style="padding: 3px 0;"><code style="background: #ffffff; padding: 3px 10px; border-radius: 4px; border: 1px solid #dbeafe; font-size: 14px; color: #111827;">${joiner.tempPassword}</code></td>
+          </tr>
+        </table>
+      </div>
+
+      <p style="margin: 0 0 10px 0; font-weight: 600; color: #111827;">Next steps</p>
+      <ul style="margin: 0 0 20px 0; padding-left: 20px; color: #374151;">
+        <li style="margin-bottom: 8px;"><a href="${config.payrollLink}" style="color: #2563eb; text-decoration: underline; font-weight: 500;">Payroll Process Link</a> <span style="color: #6b7280;">(Do not login now)</span></li>
+        <li style="margin-bottom: 8px;"><a href="${config.slackLink}" style="color: #2563eb; text-decoration: underline; font-weight: 500;">Slack Workspace</a> <span style="color: #6b7280;">(Day-to-day communication)</span></li>
+      </ul>
+
+      <!-- NOTES -->
+      <div style="background: #fffbeb; border: 1px solid #fef3c7; padding: 16px 20px; margin: 0 0 20px 0; border-radius: 6px;">
+        <p style="margin: 0 0 8px 0; font-weight: 600; color: #92400e;">A few things to note</p>
+        <ol style="margin: 0; padding-left: 20px; color: #78350f;">
+          <li style="margin-bottom: 6px;">${config.lunchNote}</li>
+          <li style="margin-bottom: 6px;">A work device will be provided by devx for official purposes.</li>
+          <li>Kindly upload the required documents via this <a href="${config.docUploadFormLink}" style="color: #2563eb; text-decoration: underline; font-weight: 500;">form</a> <span style="color: #78350f;">(Ignore if already done)</span></li>
+        </ol>
+      </div>
+
+      <p style="margin: 0 0 24px 0;">If you have any questions prior to joining, feel free to reach out. We're excited to welcome you and wish you a great start!</p>
+
+      <!-- SIGNATURE -->
+      <div style="padding-top: 20px; border-top: 1px solid #e5e7eb;">
+        <p style="margin: 0; color: #374151;">Warm regards,</p>
+        <p style="margin: 4px 0 0 0; font-weight: 600; color: #111827;">${config.hrContactName}</p>
+        <p style="margin: 2px 0 0 0; color: #6b7280; font-size: 13px;">${config.hrDesignation}</p>
+        <p style="margin: 2px 0 0 0; color: #6b7280; font-size: 13px;">${config.hrContactPhone} &nbsp;|&nbsp; <a href="mailto:${config.hrContactEmail}" style="color: #2563eb; text-decoration: none;">${config.hrContactEmail}</a></p>
+      </div>
+
     </div>
-
-    <p>Please use the links below to complete the required onboarding steps:</p>
-    <ul style="margin: 10px 0; padding-left: 20px;">
-      <li style="margin-bottom: 8px;">💰 <a href="${config.payrollLink}" style="color: #111; font-weight: 600;">Payroll Process Link</a> <span style="color: #888;">(Do not login now)</span></li>
-      <li style="margin-bottom: 8px;">💬 <a href="${config.slackLink}" style="color: #111; font-weight: 600;">Slack Link</a> <span style="color: #888;">(Day to day communication)</span></li>
-    </ul>
-
-    <!-- NOTES -->
-    <div style="background: #f9f9f9; border: 1px solid #ddd; padding: 16px; margin: 20px 0; border-radius: 4px;">
-      <strong>📝 Note:</strong>
-      <ol style="margin: 8px 0 0 0; padding-left: 20px;">
-        <li style="margin-bottom: 6px;">🍽️ ${config.lunchNote}</li>
-        <li style="margin-bottom: 6px;">💻 A work device will be provided by devx for official purposes.</li>
-        <li>📄 Kindly upload the required documents as outlined in this form link: <a href="${config.docUploadFormLink}" style="color: #111; font-weight: 600;">Form</a> <span style="color: #888;">(Ignore if it is done)</span></li>
-      </ol>
-    </div>
-
-    <p>If you have any questions prior to joining, feel free to reach out. We're excited to welcome you to the office and wish you a great start! 🌟</p>
-
-    <!-- SIGNATURE -->
-    <div style="margin-top: 28px; padding-top: 20px; border-top: 2px solid #111;">
-      <p style="margin: 0;">Warm regards,</p>
-      <p style="margin: 4px 0 0 0; font-weight: bold;">${config.hrContactName}</p>
-      <p style="margin: 2px 0 0 0; color: #666; font-size: 13px;">${config.hrDesignation}</p>
-      <p style="margin: 2px 0 0 0; color: #666; font-size: 13px;">📞 ${config.hrContactPhone} &nbsp;|&nbsp; ✉️ ${config.hrContactEmail}</p>
-    </div>
-
   </div>
 </div>`;
 
@@ -266,65 +270,67 @@ function sendWelcomeEmail(joiner, config) {
 // Sent to: Employee Personal Email
 // ============================================================
 function sendHandbookEmail(joiner, config) {
-  const subject = `📚 Employee Handbook & Policies — Please Review & Acknowledge`;
+  const subject = `Employee Handbook & Policies — Please Review & Acknowledge`;
+
+  // Policy link card — styled like a clickable attachment
+  function policyCard(title, url) {
+    return `
+      <a href="${url}" style="display: block; text-decoration: none; margin-bottom: 10px;">
+        <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 12px 16px; display: flex; align-items: center;">
+          <div style="background: #2563eb; width: 36px; height: 36px; border-radius: 6px; display: inline-block; vertical-align: middle; text-align: center; line-height: 36px; color: white; font-size: 14px; font-weight: 600; margin-right: 12px;">PDF</div>
+          <div style="display: inline-block; vertical-align: middle;">
+            <div style="color: #2563eb; font-size: 14px; font-weight: 600; text-decoration: underline;">${title}</div>
+            <div style="color: #6b7280; font-size: 12px; margin-top: 2px;">Click to open</div>
+          </div>
+        </div>
+      </a>`;
+  }
 
   const body = `
-<div style="font-family: Arial, sans-serif; max-width: 640px; margin: 0 auto; color: #222; line-height: 1.7;">
+<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; max-width: 640px; margin: 0 auto; color: #1f2937; line-height: 1.6; background: #f9fafb; padding: 20px;">
 
-  <div style="background: #111; padding: 24px; text-align: center; border-radius: 8px 8px 0 0;">
-    <h2 style="color: #fff; margin: 0; font-size: 20px;">📖 Employee Handbook & Policies</h2>
-  </div>
+  <div style="background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
 
-  <div style="padding: 30px; background: #fff; border: 1px solid #ddd; border-top: none; border-radius: 0 0 8px 8px;">
-
-    <p>Hi <strong>${joiner.firstName}</strong>,</p>
-    <p>We are sharing the devx Employee Handbook with you. 📋 Kindly review them carefully and feel free to reach out if you have any doubts or need clarification.</p>
-
-    <!-- POLICY LINKS -->
-    <div style="margin: 20px 0; border: 1px solid #ddd; border-radius: 4px; overflow: hidden;">
-      <div style="background: #f5f5f5; padding: 12px 16px; font-weight: bold; border-bottom: 1px solid #ddd;">📂 Company Policies</div>
-      <table style="width: 100%; border-collapse: collapse;">
-        <tr style="border-bottom: 1px solid #eee;">
-          <td style="padding: 11px 16px;">📄 <a href="${config.assetPolicyLink}" style="color: #111; text-decoration: none;">Asset Policy</a></td>
-        </tr>
-        <tr style="border-bottom: 1px solid #eee;">
-          <td style="padding: 11px 16px;">📄 <a href="${config.referralPolicyLink}" style="color: #111; text-decoration: none;">Employee Referral Policy</a></td>
-        </tr>
-        <tr style="border-bottom: 1px solid #eee;">
-          <td style="padding: 11px 16px;">📄 <a href="${config.separationPolicyLink}" style="color: #111; text-decoration: none;">Employment Separation Policy</a></td>
-        </tr>
-        <tr style="border-bottom: 1px solid #eee;">
-          <td style="padding: 11px 16px;">📄 <a href="${config.leavePolicyLink}" style="color: #111; text-decoration: none;">Leave Policy</a></td>
-        </tr>
-        <tr style="border-bottom: 1px solid #eee;">
-          <td style="padding: 11px 16px;">📄 <a href="${config.poshPolicyLink}" style="color: #111; text-decoration: none;">POSH Policy</a></td>
-        </tr>
-        <tr style="border-bottom: 1px solid #eee;">
-          <td style="padding: 11px 16px;">📄 <a href="${config.reimbursementLink}" style="color: #111; text-decoration: none;">Razorpay Reimbursement Process</a></td>
-        </tr>
-        <tr>
-          <td style="padding: 11px 16px;">📄 <a href="${config.wfhPolicyLink}" style="color: #111; text-decoration: none;">Work From Home (WFH) Policy</a></td>
-        </tr>
-      </table>
+    <!-- HEADER -->
+    <div style="background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); padding: 32px; text-align: center;">
+      <h2 style="color: #ffffff; margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.3px;">Employee Handbook & Policies</h2>
+      <p style="color: #bfdbfe; margin: 6px 0 0 0; font-size: 13px;">Please review and acknowledge</p>
     </div>
 
-    <!-- ACKNOWLEDGMENT -->
-    <div style="border: 2px solid #222; padding: 20px; margin: 20px 0; text-align: center; border-radius: 4px;">
-      <p style="margin: 0 0 8px 0; font-weight: bold;">✍️ Acknowledgment Required</p>
-      <p style="margin: 0 0 14px 0; font-size: 14px; color: #555;">Please review the policies, add your e-signature, and share it back in the same thread once completed.</p>
-      <a href="${config.acknowledgmentFormLink}" style="display: inline-block; background: #111; color: #fff; padding: 12px 32px; border-radius: 4px; text-decoration: none; font-weight: 600; font-size: 14px;">Open Acknowledgment Form →</a>
+    <!-- BODY -->
+    <div style="padding: 32px;">
+
+      <p style="margin: 0 0 14px 0;">Hi <strong>${joiner.firstName}</strong>,</p>
+      <p style="margin: 0 0 20px 0;">We're sharing the devx Employee Handbook with you. Kindly review each policy carefully and feel free to reach out if you have any questions.</p>
+
+      <!-- POLICY CARDS -->
+      <p style="margin: 24px 0 12px 0; font-weight: 600; color: #111827;">Company Policies</p>
+      ${policyCard('Asset Policy', config.assetPolicyLink)}
+      ${policyCard('Employee Referral Policy', config.referralPolicyLink)}
+      ${policyCard('Employment Separation Policy', config.separationPolicyLink)}
+      ${policyCard('Leave Policy', config.leavePolicyLink)}
+      ${policyCard('POSH Policy', config.poshPolicyLink)}
+      ${policyCard('Razorpay Reimbursement Process', config.reimbursementLink)}
+      ${policyCard('Work From Home (WFH) Policy', config.wfhPolicyLink)}
+
+      <!-- ACKNOWLEDGMENT -->
+      <div style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 22px; margin: 28px 0 20px 0; text-align: center; border-radius: 8px;">
+        <p style="margin: 0 0 6px 0; font-weight: 600; color: #15803d; font-size: 15px;">Acknowledgment Required</p>
+        <p style="margin: 0 0 16px 0; font-size: 13px; color: #166534;">Please review the policies, add your e-signature, and submit the form.</p>
+        <a href="${config.acknowledgmentFormLink}" style="display: inline-block; background: #2563eb; color: #ffffff; padding: 12px 32px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 14px;">Open Acknowledgment Form</a>
+      </div>
+
+      <p style="margin: 20px 0;">Thank you!</p>
+
+      <!-- SIGNATURE -->
+      <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+        <p style="margin: 0; color: #374151;">Warm regards,</p>
+        <p style="margin: 4px 0 0 0; font-weight: 600; color: #111827;">${config.hrContactName}</p>
+        <p style="margin: 2px 0 0 0; color: #6b7280; font-size: 13px;">${config.hrDesignation}</p>
+        <p style="margin: 2px 0 0 0; color: #6b7280; font-size: 13px;">${config.hrContactPhone} &nbsp;|&nbsp; <a href="mailto:${config.hrContactEmail}" style="color: #2563eb; text-decoration: none;">${config.hrContactEmail}</a></p>
+      </div>
+
     </div>
-
-    <p>Thank you! 🙏</p>
-
-    <!-- SIGNATURE -->
-    <div style="margin-top: 28px; padding-top: 20px; border-top: 2px solid #111;">
-      <p style="margin: 0;">Warm regards,</p>
-      <p style="margin: 4px 0 0 0; font-weight: bold;">${config.hrContactName}</p>
-      <p style="margin: 2px 0 0 0; color: #666; font-size: 13px;">${config.hrDesignation}</p>
-      <p style="margin: 2px 0 0 0; color: #666; font-size: 13px;">📞 ${config.hrContactPhone} &nbsp;|&nbsp; ✉️ ${config.hrContactEmail}</p>
-    </div>
-
   </div>
 </div>`;
 
@@ -338,7 +344,7 @@ function sendHandbookEmail(joiner, config) {
 
 
 // ============================================================
-// BUDDY NOTIFICATION (Clean, no emojis — internal)
+// BUDDY NOTIFICATION
 // Sent to: Buddy's Work Email
 // ============================================================
 function sendBuddyNotification(joiner, config) {
@@ -346,61 +352,64 @@ function sendBuddyNotification(joiner, config) {
   const subject = `Joining Buddy Assignment — ${joiner.fullName} joins tomorrow`;
 
   const body = `
-<div style="font-family: Arial, sans-serif; max-width: 640px; margin: 0 auto; color: #222; line-height: 1.7;">
+<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; max-width: 640px; margin: 0 auto; color: #1f2937; line-height: 1.6; background: #f9fafb; padding: 20px;">
 
-  <div style="background: #111; padding: 24px; text-align: center; border-radius: 8px 8px 0 0;">
-    <h2 style="color: #fff; margin: 0; font-size: 20px;">Joining Buddy Assignment</h2>
-  </div>
+  <div style="background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
 
-  <div style="padding: 30px; background: #fff; border: 1px solid #ddd; border-top: none; border-radius: 0 0 8px 8px;">
-
-    <p>Hi <strong>${buddyFirstName}</strong>,</p>
-    <p>I would like to inform you that <strong>${joiner.fullName}</strong> has been assigned to you as their joining buddy. Kindly assist them in getting familiar with the team, processes and other necessary guidance.</p>
-
-    <table style="width: 100%; border-collapse: collapse; margin: 16px 0; border: 1px solid #ddd;">
-      <tr style="border-bottom: 1px solid #ddd;">
-        <td style="padding: 10px 14px; font-weight: bold; background: #f5f5f5; width: 130px;">Name</td>
-        <td style="padding: 10px 14px;">${joiner.fullName}</td>
-      </tr>
-      <tr style="border-bottom: 1px solid #ddd;">
-        <td style="padding: 10px 14px; font-weight: bold; background: #f5f5f5;">Role</td>
-        <td style="padding: 10px 14px;">${joiner.role}</td>
-      </tr>
-      <tr style="border-bottom: 1px solid #ddd;">
-        <td style="padding: 10px 14px; font-weight: bold; background: #f5f5f5;">POD</td>
-        <td style="padding: 10px 14px;">${joiner.podName}</td>
-      </tr>
-      <tr>
-        <td style="padding: 10px 14px; font-weight: bold; background: #f5f5f5;">Joining Date</td>
-        <td style="padding: 10px 14px;">${joiner.joiningDay}, ${joiner.joiningDate}</td>
-      </tr>
-    </table>
-
-    <div style="background: #f5f5f5; border-left: 4px solid #222; padding: 16px 20px; margin: 20px 0;">
-      <h3 style="margin: 0 0 12px 0; color: #111; font-size: 15px;">Role of a Joining Buddy</h3>
-      <p style="margin: 0 0 10px 0;"><strong>Welcome & Onboarding Support</strong> — Personally welcome the new joiner on Day 1; from coffee and lunch to evening tea, stick with your new bud.</p>
-      <ol style="padding-left: 20px; margin: 0;">
-        <li style="margin-bottom: 6px;">Help them settle in by explaining team norms, work principles, and company culture.</li>
-        <li style="margin-bottom: 6px;">Be available to answer informal questions about day-to-day processes.</li>
-        <li style="margin-bottom: 6px;">Direct the new joiner to the right person or resource when needed.</li>
-        <li style="margin-bottom: 6px;">Introduce the new joiner to teammates and cross-functional colleagues.</li>
-        <li style="margin-bottom: 6px;">Facilitate inclusion in team meetings, group chats, and social activities.</li>
-        <li style="margin-bottom: 6px;">Provide a safe space to ask "small" or "silly" questions without judgment.</li>
-        <li style="margin-bottom: 6px;">Gather feedback from the new joiner about their onboarding experience.</li>
-        <li style="margin-bottom: 6px;">Share insights with the HR team if any improvements are needed.</li>
-        <li style="margin-bottom: 6px;"><strong>Give them a complete office tour on Day 1.</strong></li>
-      </ol>
+    <div style="background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); padding: 30px 32px; text-align: center;">
+      <h2 style="color: #ffffff; margin: 0; font-size: 20px; font-weight: 600; letter-spacing: -0.3px;">Joining Buddy Assignment</h2>
     </div>
 
-    <p>Thank you for being a great buddy!</p>
+    <div style="padding: 32px;">
 
-    <div style="margin-top: 28px; padding-top: 20px; border-top: 2px solid #111;">
-      <p style="margin: 0;">Warm regards,</p>
-      <p style="margin: 4px 0 0 0; font-weight: bold;">${config.hrContactName}</p>
-      <p style="margin: 2px 0 0 0; color: #666; font-size: 13px;">${config.hrDesignation}</p>
-      <p style="margin: 2px 0 0 0; color: #666; font-size: 13px;">${config.hrContactPhone} &nbsp;|&nbsp; ${config.hrContactEmail}</p>
+      <p style="margin: 0 0 14px 0;">Hi <strong>${buddyFirstName}</strong>,</p>
+      <p style="margin: 0 0 20px 0;"><strong>${joiner.fullName}</strong> has been assigned to you as their joining buddy. Kindly assist them in getting familiar with the team, processes, and other necessary guidance.</p>
+
+      <table style="width: 100%; border-collapse: collapse; margin: 0 0 24px 0; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;">
+        <tr style="border-bottom: 1px solid #e5e7eb;">
+          <td style="padding: 12px 16px; font-weight: 600; background: #f9fafb; width: 130px; color: #374151;">Name</td>
+          <td style="padding: 12px 16px;">${joiner.fullName}</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e5e7eb;">
+          <td style="padding: 12px 16px; font-weight: 600; background: #f9fafb; color: #374151;">Role</td>
+          <td style="padding: 12px 16px;">${joiner.role}</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e5e7eb;">
+          <td style="padding: 12px 16px; font-weight: 600; background: #f9fafb; color: #374151;">POD</td>
+          <td style="padding: 12px 16px;"><strong style="color: #2563eb;">${joiner.podName}</strong></td>
+        </tr>
+        <tr>
+          <td style="padding: 12px 16px; font-weight: 600; background: #f9fafb; color: #374151;">Joining Date</td>
+          <td style="padding: 12px 16px;">${joiner.joiningDay}, ${joiner.joiningDate}</td>
+        </tr>
+      </table>
+
+      <div style="background: #eff6ff; border-left: 4px solid #2563eb; padding: 20px 22px; margin: 0 0 24px 0; border-radius: 6px;">
+        <p style="margin: 0 0 10px 0; color: #1e40af; font-size: 15px; font-weight: 600;">Role of a Joining Buddy</p>
+        <p style="margin: 0 0 12px 0; color: #1e3a8a;"><strong>Welcome & Onboarding Support</strong> — Personally welcome the new joiner on Day 1; from coffee and lunch to evening tea, stick with your new bud.</p>
+        <ol style="padding-left: 20px; margin: 0; color: #1e3a8a;">
+          <li style="margin-bottom: 6px;">Help them settle in by explaining team norms, work principles, and company culture.</li>
+          <li style="margin-bottom: 6px;">Be available to answer informal questions about day-to-day processes.</li>
+          <li style="margin-bottom: 6px;">Direct the new joiner to the right person or resource when needed.</li>
+          <li style="margin-bottom: 6px;">Introduce the new joiner to teammates and cross-functional colleagues.</li>
+          <li style="margin-bottom: 6px;">Facilitate inclusion in team meetings, group chats, and social activities.</li>
+          <li style="margin-bottom: 6px;">Provide a safe space to ask small or informal questions without judgment.</li>
+          <li style="margin-bottom: 6px;">Gather feedback from the new joiner about their onboarding experience.</li>
+          <li style="margin-bottom: 6px;">Share insights with the HR team if any improvements are needed.</li>
+          <li style="margin-bottom: 6px;"><strong>Give them a complete office tour on Day 1.</strong></li>
+        </ol>
+      </div>
+
+      <p style="margin: 0 0 24px 0;">Thank you for being a great buddy!</p>
+
+      <div style="padding-top: 20px; border-top: 1px solid #e5e7eb;">
+        <p style="margin: 0; color: #374151;">Warm regards,</p>
+        <p style="margin: 4px 0 0 0; font-weight: 600; color: #111827;">${config.hrContactName}</p>
+        <p style="margin: 2px 0 0 0; color: #6b7280; font-size: 13px;">${config.hrDesignation}</p>
+        <p style="margin: 2px 0 0 0; color: #6b7280; font-size: 13px;">${config.hrContactPhone} &nbsp;|&nbsp; <a href="mailto:${config.hrContactEmail}" style="color: #2563eb; text-decoration: none;">${config.hrContactEmail}</a></p>
+      </div>
+
     </div>
-
   </div>
 </div>`;
 
@@ -409,77 +418,35 @@ function sendBuddyNotification(joiner, config) {
 
 
 // ============================================================
-// POD LEADER NOTIFICATION (Clean, no emojis — internal)
+// POD LEADER NOTIFICATION — short & simple
 // Sent to: POD Leader's Work Email
 // ============================================================
 function sendPodLeaderNotification(joiner, config) {
-  const leaderFirstName = joiner.podLeader.toString().split(' ')[0];
-  const subject = `New Team Member Joining ${joiner.podName} POD Tomorrow — ${joiner.fullName}`;
+  const subject = `New POD Member — ${joiner.fullName}`;
 
   const body = `
-<div style="font-family: Arial, sans-serif; max-width: 640px; margin: 0 auto; color: #222; line-height: 1.7;">
+<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; max-width: 560px; margin: 0 auto; color: #1f2937; line-height: 1.6; background: #f9fafb; padding: 20px;">
 
-  <div style="background: #111; padding: 24px; text-align: center; border-radius: 8px 8px 0 0;">
-    <h2 style="color: #fff; margin: 0; font-size: 20px;">New Member Joining Your POD</h2>
-  </div>
+  <div style="background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
 
-  <div style="padding: 30px; background: #fff; border: 1px solid #ddd; border-top: none; border-radius: 0 0 8px 8px;">
-
-    <p>Hi <strong>${leaderFirstName}</strong>,</p>
-    <p>This is to inform you that a new team member is joining the <strong>${joiner.podName}</strong> POD tomorrow.</p>
-
-    <table style="width: 100%; border-collapse: collapse; margin: 16px 0; border: 1px solid #ddd;">
-      <tr style="border-bottom: 1px solid #ddd;">
-        <td style="padding: 10px 14px; font-weight: bold; background: #f5f5f5; width: 140px;">Name</td>
-        <td style="padding: 10px 14px;">${joiner.fullName}</td>
-      </tr>
-      <tr style="border-bottom: 1px solid #ddd;">
-        <td style="padding: 10px 14px; font-weight: bold; background: #f5f5f5;">Role</td>
-        <td style="padding: 10px 14px;">${joiner.role}</td>
-      </tr>
-      <tr style="border-bottom: 1px solid #ddd;">
-        <td style="padding: 10px 14px; font-weight: bold; background: #f5f5f5;">Department</td>
-        <td style="padding: 10px 14px;">${joiner.department}</td>
-      </tr>
-      <tr style="border-bottom: 1px solid #ddd;">
-        <td style="padding: 10px 14px; font-weight: bold; background: #f5f5f5;">Joining Date</td>
-        <td style="padding: 10px 14px;">${joiner.joiningDay}, ${joiner.joiningDate}</td>
-      </tr>
-      <tr style="border-bottom: 1px solid #ddd;">
-        <td style="padding: 10px 14px; font-weight: bold; background: #f5f5f5;">Mode</td>
-        <td style="padding: 10px 14px;">${joiner.mode}</td>
-      </tr>
-      <tr style="border-bottom: 1px solid #ddd;">
-        <td style="padding: 10px 14px; font-weight: bold; background: #f5f5f5;">Joining Buddy</td>
-        <td style="padding: 10px 14px;">${joiner.buddyName}</td>
-      </tr>
-      <tr>
-        <td style="padding: 10px 14px; font-weight: bold; background: #f5f5f5;">Work Email</td>
-        <td style="padding: 10px 14px;">${joiner.workEmail}</td>
-      </tr>
-    </table>
-
-    <div style="background: #f5f5f5; border-left: 4px solid #222; padding: 16px 20px; margin: 20px 0;">
-      <h3 style="margin: 0 0 12px 0; color: #111; font-size: 15px;">What We Need From You</h3>
-      <ol style="padding-left: 20px; margin: 0;">
-        <li style="margin-bottom: 8px;"><strong>Handshake meeting</strong> — Schedule a brief welcome meeting with ${joiner.firstName} on Day 1 or within the first week.</li>
-        <li style="margin-bottom: 8px;"><strong>POD introduction</strong> — Help ${joiner.firstName} understand the POD's current focus, goals, and their role in it.</li>
-        <li style="margin-bottom: 8px;"><strong>Team introduction</strong> — Introduce them to POD members (in-person or on the Saturday team meet).</li>
-        <li style="margin-bottom: 8px;"><strong>Initial tasks</strong> — Have starter tasks or reading material ready for ramp-up.</li>
-      </ol>
+    <div style="background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); padding: 28px 32px; text-align: center;">
+      <h2 style="color: #ffffff; margin: 0; font-size: 18px; font-weight: 600; letter-spacing: -0.3px;">New POD Member</h2>
     </div>
 
-    <p>The joining buddy <strong>${joiner.buddyName}</strong> will handle Day 1 logistics (office tour, team norms, etc.). Please coordinate with them if needed.</p>
+    <div style="padding: 32px;">
 
-    <p>Thank you for welcoming ${joiner.firstName} to the team!</p>
+      <p style="margin: 0 0 14px 0;">Hi,</p>
+      <p style="margin: 0 0 14px 0;">Please meet your new pod member, <strong style="color: #2563eb;">${joiner.fullName}</strong>, who has joined devx as a <strong>${joiner.role}</strong>.</p>
+      <p style="margin: 0 0 24px 0;">Let me know a suitable time for a quick handshake with your new buddy.</p>
 
-    <div style="margin-top: 28px; padding-top: 20px; border-top: 2px solid #111;">
-      <p style="margin: 0;">Warm regards,</p>
-      <p style="margin: 4px 0 0 0; font-weight: bold;">${config.hrContactName}</p>
-      <p style="margin: 2px 0 0 0; color: #666; font-size: 13px;">${config.hrDesignation}</p>
-      <p style="margin: 2px 0 0 0; color: #666; font-size: 13px;">${config.hrContactPhone} &nbsp;|&nbsp; ${config.hrContactEmail}</p>
+      <div style="padding-top: 20px; border-top: 1px solid #e5e7eb;">
+        <p style="margin: 0; color: #374151;">Warm regards,</p>
+        <p style="margin: 4px 0 0 0; font-weight: 600; color: #111827;">${config.hrContactName}</p>
+        <p style="margin: 2px 0 0 0; color: #6b7280; font-size: 13px;">${config.hrDesignation}</p>
+        <p style="margin: 2px 0 0 0; color: #6b7280; font-size: 13px;">${config.hrContactPhone} &nbsp;|&nbsp; <a href="mailto:${config.hrContactEmail}" style="color: #2563eb; text-decoration: none;">${config.hrContactEmail}</a></p>
+      </div>
+
     </div>
-
   </div>
 </div>`;
 

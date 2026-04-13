@@ -24,6 +24,7 @@ const app = new App({
 // Register all Slack handlers
 require('./slack/checklist').register(app);
 require('./slack/commands').register(app);
+require('./slack/relay').register(app);
 
 // Handle @bot mentions
 app.event('app_mention', async ({ event, say }) => {
