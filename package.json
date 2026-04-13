@@ -2,7 +2,6 @@
   "name": "devx-onboarding-bot",
   "version": "1.0.0",
   "description": "Slack onboarding bot for devx Ai Labs",
-  "main": "server.js",
   "scripts": {
     "start": "node scripts/server.js",
     "dev": "nodemon scripts/server.js"
