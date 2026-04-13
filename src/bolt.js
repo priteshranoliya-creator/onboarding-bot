@@ -1,10 +1,18 @@
 const { App, ExpressReceiver } = require('@slack/bolt');
+const express = require('express');
 const config = require('./config');
 
 const receiver = new ExpressReceiver({
   signingSecret: config.SLACK_SIGNING_SECRET,
   processBeforeResponse: true,
   endpoints: '/api/slack',
+});
+
+// Ensure the Express app parses JSON bodies for non-Slack routes.
+// Must skip /api/slack since Bolt needs the raw body for signature verification.
+receiver.app.use((req, res, next) => {
+  if (req.path === '/api/slack') return next();
+  return express.json({ limit: '1mb' })(req, res, next);
 });
 
 const app = new App({
