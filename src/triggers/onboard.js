@@ -29,6 +29,7 @@ async function handler(req, res) {
           expectedStart: (config.WEBHOOK_SECRET || '').substring(0, 8),
           bodyType: typeof req.body,
           bodyKeys: Object.keys(req.body || {}),
+          diag: req._diag,
         },
       });
     }
