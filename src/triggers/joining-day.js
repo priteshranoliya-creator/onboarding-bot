@@ -1,4 +1,4 @@
-const sheets = require('../sheets/client');
+const db = require('../db/client');
 const notify = require('../slack/notify');
 const { isTodayIST } = require('../utils/date');
 
@@ -12,8 +12,8 @@ const { isTodayIST } = require('../utils/date');
  */
 async function handler(req, res) {
   try {
-    const joiners = await sheets.getJoiners();
-    const configData = await sheets.getConfig();
+    const joiners = await db.getJoiners();
+    const configData = await db.getConfig();
     let processed = 0;
 
     for (const joiner of joiners) {
@@ -28,13 +28,13 @@ async function handler(req, res) {
       await notify.dmJoinee(joiner, configData);
 
       // 3. Update #hr-onboarding thread if we have the thread TS
-      const threadInfo = await sheets.getSlackThreadInfo(joiner.workEmail);
+      const threadInfo = await db.getSlackThreadInfo(joiner.workEmail);
       if (threadInfo?.threadTs) {
         await notify.postJoiningDayUpdate(joiner, threadInfo.threadTs);
       }
 
       // 4. Log
-      await sheets.addLog(joiner.name, 'D-0 Slack automation executed');
+      await db.addLog(joiner.name, 'D-0 Slack automation executed');
       processed++;
     }
 

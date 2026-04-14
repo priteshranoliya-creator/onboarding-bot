@@ -1,4 +1,4 @@
-const sheets = require('../sheets/client');
+const db = require('../db/client');
 const notify = require('../slack/notify');
 const { daysFromTodayIST, isWithinDaysIST } = require('../utils/date');
 const { getCheckedCount, getTotalItemCount } = require('../slack/checklist');
@@ -12,7 +12,7 @@ const { getCheckedCount, getTotalItemCount } = require('../slack/checklist');
  */
 async function handler(req, res) {
   try {
-    const joiners = await sheets.getJoiners();
+    const joiners = await db.getJoiners();
     const totalItems = getTotalItemCount();
 
     // ── Per-joiner pending reminders (joined 2+ days ago, items pending) ──
@@ -23,12 +23,12 @@ async function handler(req, res) {
       // Only for joiners who joined 2+ days ago (daysAgo <= -2)
       if (daysAgo > -2) continue;
 
-      const state = await sheets.getChecklistState(joiner.workEmail);
+      const state = await db.getChecklistState(joiner.workEmail);
       const checked = getCheckedCount(state);
       const pending = totalItems - checked;
 
       if (pending > 0) {
-        const threadInfo = await sheets.getSlackThreadInfo(joiner.workEmail);
+        const threadInfo = await db.getSlackThreadInfo(joiner.workEmail);
         if (threadInfo?.threadTs) {
           await notify.postPendingReminder(joiner, threadInfo.threadTs, pending);
           remindersSent++;
@@ -46,7 +46,7 @@ async function handler(req, res) {
       if (!isWithinDaysIST(joiner.joiningDate, 7)) continue;
 
       thisWeekCount++;
-      const state = await sheets.getChecklistState(joiner.workEmail);
+      const state = await db.getChecklistState(joiner.workEmail);
       const checked = getCheckedCount(state);
       const pending = totalItems - checked;
 
@@ -60,7 +60,7 @@ async function handler(req, res) {
     await notify.postWeeklyDigest(thisWeekCount, fullyOnboarded, pendingList);
 
     // Log
-    await sheets.addLog(
+    await db.addLog(
       'System',
       `Smart alerts: ${remindersSent} reminders, weekly digest posted`
     );

@@ -9,7 +9,7 @@
     }
   },
   "crons": [
-    { "path": "/api/cron/joining-day", "schedule": "0 4 * * *" },
+    { "path": "/api/cron/daily-onboarding", "schedule": "30 3 * * *" },
     { "path": "/api/cron/smart-alerts", "schedule": "0 5 * * 1" }
   ]
 }

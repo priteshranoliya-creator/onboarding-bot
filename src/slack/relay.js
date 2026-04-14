@@ -5,7 +5,7 @@
 // ─────────────────────────────────────────────────────────────
 
 const config = require('../config');
-const sheets = require('../sheets/client');
+const db = require('../db/client');
 const { lookupByEmail, openDM } = require('../utils/lookup');
 const { daysFromTodayIST } = require('../utils/date');
 
@@ -28,7 +28,7 @@ function register(app) {
       if (senderEmail === (config.HR_EMAIL || '').toLowerCase()) return;
 
       // Find joiners where the sender is the POD leader AND joining is recent/upcoming (±14 days)
-      const joiners = await sheets.getJoiners();
+      const joiners = await db.getJoiners();
       const matches = joiners.filter((j) => {
         if (!j.joiningDate || !j.podLeaderEmail) return false;
         if (j.podLeaderEmail.toLowerCase() !== senderEmail) return false;
@@ -82,7 +82,7 @@ function register(app) {
       });
 
       // Log
-      await sheets.addLog(
+      await db.addLog(
         matches[0].name,
         `POD Leader reply forwarded to HR: ${event.text.substring(0, 100)}`
       );

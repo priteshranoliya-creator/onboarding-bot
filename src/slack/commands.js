@@ -1,4 +1,4 @@
-const sheets = require('../sheets/client');
+const db = require('../db/client');
 const blocks = require('./blocks');
 const { getCheckedCount, getTotalItemCount } = require('./checklist-items');
 const { isWithinDaysIST, daysFromTodayIST } = require('../utils/date');
@@ -14,13 +14,13 @@ function register(app) {
         return;
       }
 
-      const joiner = await sheets.getJoinerByName(name);
+      const joiner = await db.getJoinerByName(name);
       if (!joiner) {
         await respond({ text: `No joiner found matching "${name}".` });
         return;
       }
 
-      const state = await sheets.getChecklistState(joiner.workEmail);
+      const state = await db.getChecklistState(joiner.workEmail);
       await respond({
         blocks: blocks.pendingItemsBlocks(joiner, state),
         text: `Pending items for ${joiner.name}`,
@@ -41,13 +41,13 @@ function register(app) {
         return;
       }
 
-      const joiner = await sheets.getJoinerByName(name);
+      const joiner = await db.getJoinerByName(name);
       if (!joiner) {
         await respond({ text: `No joiner found matching "${name}".` });
         return;
       }
 
-      const state = await sheets.getChecklistState(joiner.workEmail);
+      const state = await db.getChecklistState(joiner.workEmail);
       await respond({
         blocks: blocks.onboardStatusBlocks(joiner, state),
         text: `Onboarding status for ${joiner.name}`,
@@ -62,14 +62,14 @@ function register(app) {
   app.command('/upcoming', async ({ command, ack, respond }) => {
     await ack();
     try {
-      const joiners = await sheets.getJoiners();
+      const joiners = await db.getJoiners();
       const upcoming = [];
 
       for (const joiner of joiners) {
         if (!joiner.joiningDate) continue;
         if (!isWithinDaysIST(joiner.joiningDate, 7)) continue;
 
-        const state = await sheets.getChecklistState(joiner.workEmail);
+        const state = await db.getChecklistState(joiner.workEmail);
         upcoming.push({
           joiner,
           daysAway: daysFromTodayIST(joiner.joiningDate),

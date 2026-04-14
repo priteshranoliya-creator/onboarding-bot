@@ -1,4 +1,4 @@
-const sheets = require('../sheets/client');
+const db = require('../db/client');
 const notify = require('./notify');
 const config = require('../config');
 const {
@@ -25,7 +25,7 @@ function register(app) {
         if (!workEmail) return;
 
         // Get current state from sheet
-        const currentState = await sheets.getChecklistState(workEmail);
+        const currentState = await db.getChecklistState(workEmail);
 
         // Build the new selected set for this category
         const selectedIds = new Set(
@@ -48,10 +48,10 @@ function register(app) {
         for (const id of newlyUnchecked) newState[id] = false;
 
         // Persist to Google Sheet
-        await sheets.updateChecklistState(workEmail, newState);
+        await db.updateChecklistState(workEmail, newState);
 
         // Get joiner info for message rebuild and DMs
-        const joiner = await sheets.getJoinerByEmail(workEmail);
+        const joiner = await db.getJoinerByEmail(workEmail);
         if (!joiner) return;
 
         // Update the checklist message in-place
@@ -70,10 +70,10 @@ function register(app) {
 
         // Log
         for (const itemId of newlyChecked) {
-          await sheets.addLog(joiner.name, `Checked: ${itemId}`);
+          await db.addLog(joiner.name, `Checked: ${itemId}`);
         }
         for (const itemId of newlyUnchecked) {
-          await sheets.addLog(joiner.name, `Unchecked: ${itemId}`);
+          await db.addLog(joiner.name, `Unchecked: ${itemId}`);
         }
       } catch (err) {
         console.error('Checklist action error:', err);
