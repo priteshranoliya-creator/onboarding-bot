@@ -22,14 +22,30 @@ function register(app) {
       console.log('JOINER_SYNC message received');
 
       // Parse key: value lines
+      // Handles both "key: value" on one line AND "key:\nvalue" across lines
       const lines = event.text.split('\n').slice(1); // skip "JOINER_SYNC"
       const data = {};
+      const knownKeys = [
+        'name', 'workEmail', 'personalEmail', 'mode', 'role',
+        'joiningDate', 'resumeUrl', 'status', 'buddy', 'location',
+        'podLeader', 'podName', 'department', 'phone', 'tempPassword',
+      ];
+      let currentKey = null;
       for (const line of lines) {
         const colonIdx = line.indexOf(':');
-        if (colonIdx === -1) continue;
-        const key = line.slice(0, colonIdx).trim();
-        const value = line.slice(colonIdx + 1).trim();
-        if (key && value) data[key] = value;
+        if (colonIdx > 0) {
+          const possibleKey = line.slice(0, colonIdx).trim();
+          if (knownKeys.includes(possibleKey)) {
+            currentKey = possibleKey;
+            const value = line.slice(colonIdx + 1).trim();
+            data[currentKey] = value;
+            continue;
+          }
+        }
+        // Line without a key — append to current key if value was empty
+        if (currentKey && !data[currentKey] && line.trim()) {
+          data[currentKey] = line.trim();
+        }
       }
 
       if (!data.workEmail) {
