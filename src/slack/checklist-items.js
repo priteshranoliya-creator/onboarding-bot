@@ -7,6 +7,8 @@ const CHECKLIST_CATEGORIES = [
     items: [
       { id: 'welcome_email', label: 'Welcome email sent' },
       { id: 'handbook_email', label: 'Handbook email sent' },
+      { id: 'pre_read_material', label: 'Pre-read material shared (Employee Handbook & Plum Handbook)' },
+      { id: 'policy_ack_form_shared', label: 'Employee Policy acknowledgement form shared' },
       { id: 'buddy_notified', label: 'Buddy notified' },
       { id: 'pod_leader_notified', label: 'POD Leader notified' },
       { id: 'work_email_created', label: 'Work email created in Google Admin' },
