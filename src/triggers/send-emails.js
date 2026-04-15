@@ -3,11 +3,11 @@
  *
  * For each joiner with status "Confirmed":
  *
- *   D-7 to D-1:  Try sending 4 emails (if all fields ready)
- *                 If fields missing → alert HR, retry next day automatically
- *   D-3:         Reminder to HR (checklist progress)
- *   D-1:         Final reminder to HR
- *   D-0:         Welcome messages (#general, DM joinee, update HR thread)
+ *   D-7 to D-2:  Validation only — alert HR if fields missing, NO emails
+ *   D-3:         Reminder to HR (checklist progress + urgency)
+ *   D-1:         Send 4 emails + Slack announcements (if all fields ready)
+ *                 If fields STILL missing → urgent alert to HR
+ *   D-0:         Welcome messages (#general, DM joinee, DM buddy, DM POD leader)
  *                 Ask HR to mark status as "Joined"
  *   D+2:         If status still not "Joined" → remind HR again
  *
@@ -62,9 +62,14 @@ async function handler(req, res) {
       const daysUntil = daysFromTodayIST(joiner.joiningDate);
       const joiningDateLong = formatJoiningDate(joiner.joiningDate);
 
-      // ── D-7 to D-1: Send emails or alert HR ──────────────
-      if (daysUntil >= 1 && daysUntil <= 7) {
-        await handlePreJoining(joiner, daysUntil, joiningDateLong, configData, stats);
+      // ── D-7 to D-2: Validation alerts only ────────────────
+      if (daysUntil >= 2 && daysUntil <= 7) {
+        await handlePreJoiningValidation(joiner, daysUntil, joiningDateLong, stats);
+      }
+
+      // ── D-1: Send 4 emails ───────────────────────────────
+      if (daysUntil === 1) {
+        await handleD1Emails(joiner, joiningDateLong, stats);
       }
 
       // ── D-0: Joining day ─────────────────────────────────
@@ -86,90 +91,100 @@ async function handler(req, res) {
   }
 }
 
-// ─── D-7 to D-1: Emails + Validation ───────────────────────
+// ─── D-7 to D-2: Validation only (no emails) ──────────────
 
-async function handlePreJoining(joiner, daysUntil, joiningDateLong, configData, stats) {
-  const emailsAlreadySent = await db.hasEmailBeenSent(
-    `${joiner.workEmail}:welcome:${joiner.joiningDate}`
-  );
+async function handlePreJoiningValidation(joiner, daysUntil, joiningDateLong, stats) {
+  const missing = getMissingFields(joiner);
 
-  // Try sending emails if not sent yet
-  if (!emailsAlreadySent) {
-    const missing = getMissingFields(joiner);
-
-    if (missing.length === 0) {
-      // All fields ready → send emails
-      console.log(`D-${daysUntil}: Sending emails for ${joiner.name}`);
-      const emailResults = await sendOnboardingEmails(joiner);
-
-      // Post Slack announcement + checklist
-      const { threadTs, checklistTs } = await notify.postAnnouncement(joiner);
-
-      const initialState = {};
-      if (emailResults.welcome?.sent) initialState.welcome_email = true;
-      if (emailResults.handbook?.sent) initialState.handbook_email = true;
-      if (emailResults.buddy?.sent) initialState.buddy_notified = true;
-      if (emailResults.podLeader?.sent) initialState.pod_leader_notified = true;
-
-      await db.saveSlackThreadInfo(joiner.workEmail, threadTs, checklistTs);
-      await db.updateChecklistState(joiner.workEmail, initialState);
-
-      // DM buddy, POD leader, HR
-      await notify.dmBuddy(joiner);
-      await notify.dmPodLeader(joiner);
-      await notify.dmHr(joiner, threadTs);
-
-      await db.addLog(joiner.name, `D-${daysUntil}: Emails sent + Slack notifications`);
-      stats.emailsSent++;
-
-      // Notify HR: emails sent successfully
-      await dmHrAlert(
-        `:white_check_mark: *Onboarding emails sent — ${joiner.name}*`,
-        `All 4 onboarding emails sent successfully.\n*Joining:* ${joiningDateLong} (${daysUntil} days away)\n*Role:* ${joiner.role} | *POD:* ${joiner.podName}`
-      );
-    } else {
-      // Missing fields → alert HR
-      const missingList = missing.map(f => `• ${f.label}`).join('\n');
-      console.log(`D-${daysUntil}: Missing fields for ${joiner.name}:`, missing.map(f => f.key));
-
-      await dmHrAlert(
-        `:warning: *Onboarding blocked — ${joiner.name}*`,
-        `*${joiner.name}* joins in *${daysUntil} days* (${joiningDateLong}) but emails are NOT sent.\n\n*Missing information:*\n${missingList}\n\nPlease update the Slack List. I'll retry automatically tomorrow.`
-      );
-      await db.addLog(joiner.name, `D-${daysUntil}: Emails blocked — missing: ${missing.map(f => f.key).join(', ')}`);
-      stats.alerts++;
-    }
-  }
-
-  // D-3 reminder (only if emails already sent)
-  if (daysUntil === 3 && emailsAlreadySent) {
-    const state = await db.getChecklistState(joiner.workEmail);
-    const checked = getCheckedCount(state);
-    const total = getTotalItemCount();
+  if (missing.length > 0) {
+    const missingList = missing.map(f => `• ${f.label}`).join('\n');
+    console.log(`D-${daysUntil}: Missing fields for ${joiner.name}:`, missing.map(f => f.key));
 
     await dmHrAlert(
-      `:bell: *Reminder — ${joiner.name} joins in 3 days*`,
-      `*Joining:* ${joiningDateLong}\n*Checklist:* ${checked}/${total} items completed\n*Emails:* Sent :white_check_mark:`
+      `:warning: *Action needed — ${joiner.name} joins in ${daysUntil} days*`,
+      `*${joiner.name}* joins on *${joiningDateLong}* but the following info is missing:\n\n${missingList}\n\nEmails will be sent on D-1 (day before joining). Please update the Slack List before then.`
+    );
+    await db.addLog(joiner.name, `D-${daysUntil}: Missing fields alert — ${missing.map(f => f.key).join(', ')}`);
+    stats.alerts++;
+  } else if (daysUntil === 7) {
+    // D-7: All fields ready — confirm to HR
+    await dmHrAlert(
+      `:white_check_mark: *All set — ${joiner.name} joins in 7 days*`,
+      `All information is complete for *${joiner.name}*.\n*Joining:* ${joiningDateLong}\n*Role:* ${joiner.role} | *POD:* ${joiner.podName}\n*Buddy:* ${joiner.buddyName}\n\nEmails will be sent automatically on D-1.`
     );
     stats.reminders++;
   }
 
-  // D-1 final reminder
-  if (daysUntil === 1) {
-    if (emailsAlreadySent) {
-      await dmHrAlert(
-        `:rotating_light: *Tomorrow — ${joiner.name} joins!*`,
-        `Make sure everything is ready for *${joiner.name}*.\n*Role:* ${joiner.role} | *POD:* ${joiner.podName}\n*Buddy:* ${joiner.buddyName || 'Not assigned'}`
-      );
-    } else {
-      // Last chance — emails still not sent
-      await dmHrAlert(
-        `:x: *URGENT — ${joiner.name} joins TOMORROW but emails not sent!*`,
-        `Onboarding emails were never sent for *${joiner.name}*.\nPlease check the Slack List immediately and ensure all fields are filled.\n\nThe system will make one final attempt tonight.`
-      );
-    }
+  // D-3: Progress reminder
+  if (daysUntil === 3) {
+    const emailsAlreadySent = await db.hasEmailBeenSent(`${joiner.workEmail}:welcome:${joiner.joiningDate}`);
+    await dmHrAlert(
+      `:bell: *Reminder — ${joiner.name} joins in 3 days*`,
+      `*Joining:* ${joiningDateLong}\n*Role:* ${joiner.role} | *POD:* ${joiner.podName}\n*Emails:* ${emailsAlreadySent ? 'Already sent :white_check_mark:' : 'Will be sent on D-1'}\n${missing.length > 0 ? `\n:warning: *Still missing:*\n${missing.map(f => '• ' + f.label).join('\n')}` : ':white_check_mark: All fields ready'}`
+    );
     stats.reminders++;
   }
+}
+
+// ─── D-1: Send emails ──────────────────────────────────────
+
+async function handleD1Emails(joiner, joiningDateLong, stats) {
+  const emailsAlreadySent = await db.hasEmailBeenSent(
+    `${joiner.workEmail}:welcome:${joiner.joiningDate}`
+  );
+
+  if (emailsAlreadySent) {
+    // Already sent (e.g. via manual trigger) — just remind
+    await dmHrAlert(
+      `:rotating_light: *Tomorrow — ${joiner.name} joins!*`,
+      `Make sure everything is ready.\n*Role:* ${joiner.role} | *POD:* ${joiner.podName}\n*Buddy:* ${joiner.buddyName || 'Not assigned'}\n*Emails:* Already sent :white_check_mark:`
+    );
+    stats.reminders++;
+    return;
+  }
+
+  const missing = getMissingFields(joiner);
+
+  if (missing.length > 0) {
+    // D-1 and fields STILL missing — urgent alert, no emails
+    const missingList = missing.map(f => `• ${f.label}`).join('\n');
+    await dmHrAlert(
+      `:x: *URGENT — ${joiner.name} joins TOMORROW but emails cannot be sent!*`,
+      `The following fields are still missing:\n\n${missingList}\n\nPlease update the Slack List *immediately*. The system will retry on the next cron run.`
+    );
+    await db.addLog(joiner.name, `D-1: URGENT — emails blocked, missing: ${missing.map(f => f.key).join(', ')}`);
+    stats.alerts++;
+    return;
+  }
+
+  // All fields ready → send 4 emails
+  console.log(`D-1: Sending emails for ${joiner.name}`);
+  const emailResults = await sendOnboardingEmails(joiner);
+
+  // Post Slack announcement + checklist in #hr-onboarding
+  const { threadTs, checklistTs } = await notify.postAnnouncement(joiner);
+
+  const initialState = {};
+  if (emailResults.welcome?.sent) initialState.welcome_email = true;
+  if (emailResults.handbook?.sent) initialState.handbook_email = true;
+  if (emailResults.buddy?.sent) initialState.buddy_notified = true;
+  if (emailResults.podLeader?.sent) initialState.pod_leader_notified = true;
+
+  await db.saveSlackThreadInfo(joiner.workEmail, threadTs, checklistTs);
+  await db.updateChecklistState(joiner.workEmail, initialState);
+
+  // DM buddy, POD leader, HR
+  await notify.dmBuddy(joiner);
+  await notify.dmPodLeader(joiner);
+  await notify.dmHr(joiner, threadTs);
+
+  await db.addLog(joiner.name, 'D-1: Emails sent + Slack notifications');
+  stats.emailsSent++;
+
+  await dmHrAlert(
+    `:white_check_mark: *Onboarding emails sent — ${joiner.name}*`,
+    `All 4 emails sent successfully. ${joiner.name} joins *tomorrow* (${joiningDateLong}).\n*Role:* ${joiner.role} | *POD:* ${joiner.podName}\n*Buddy:* ${joiner.buddyName}`
+  );
 }
 
 // ─── D-0: Joining day ──────────────────────────────────────
@@ -192,7 +207,7 @@ async function handleJoiningDay(joiner, configData, stats) {
   // DM HR: mark as joined
   await dmHrAlert(
     `:tada: *${joiner.name} has joined today!*`,
-    `Please update status to *"Joined"* in the Slack List.\n*Role:* ${joiner.role} | *POD:* ${joiner.podName}`
+    `Please update status to *"Joined"* in the Slack List.\n*Role:* ${joiner.role} | *POD:* ${joiner.podName}\n*Buddy:* ${joiner.buddyName}`
   );
 
   await db.addLog(joiner.name, 'D-0: Welcome messages sent');
@@ -238,6 +253,27 @@ async function dmHrAlert(title, body) {
     });
   } catch (err) {
     console.error('HR alert failed:', err.message);
+  }
+}
+
+// ─── DM any user by email ──────────────────────────────────
+
+async function dmUserByEmail(email, title, body) {
+  try {
+    const userId = await lookupByEmail(email);
+    if (!userId) return;
+    const dm = await openDM(userId);
+
+    await getSlack().chat.postMessage({
+      channel: dm,
+      text: title,
+      blocks: [
+        { type: 'section', text: { type: 'mrkdwn', text: title } },
+        { type: 'section', text: { type: 'mrkdwn', text: body } },
+      ],
+    });
+  } catch (err) {
+    console.error(`DM to ${email} failed:`, err.message);
   }
 }
 
