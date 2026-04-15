@@ -48,12 +48,20 @@ function register(app) {
         }
       }
 
+      // Clean Slack auto-linked emails: <mailto:a@b.com|a@b.com> → a@b.com
+      for (const key of Object.keys(data)) {
+        if (typeof data[key] === 'string') {
+          data[key] = data[key].replace(/<mailto:([^|>]+)\|[^>]+>/g, '$1');
+          data[key] = data[key].replace(/<mailto:([^>]+)>/g, '$1');
+        }
+      }
+
       if (!data.workEmail) {
         console.warn('JOINER_SYNC: missing workEmail, skipping');
         return;
       }
 
-      // Resolve People-type fields: <@U123ABC> → { name, email }
+      // Resolve People-type fields: <@U123ABC> or @Name → { name, email }
       const buddy = await resolveUser(client, data.buddy);
       const podLeader = await resolveUser(client, data.podLeader);
 
