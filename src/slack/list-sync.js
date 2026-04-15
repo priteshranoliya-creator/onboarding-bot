@@ -13,8 +13,8 @@ function register(app) {
   app.event('message', async ({ event, client }) => {
     // Only handle messages in #bot-sync
     if (event.channel !== BOT_SYNC_CHANNEL) return;
-    // Ignore edits, deletes, bot thread replies
-    if (event.subtype) return;
+    // Ignore edits, deletes — but ALLOW bot_message (Workflow Builder posts as bot)
+    if (event.subtype && event.subtype !== 'bot_message') return;
     // Must start with JOINER_SYNC marker
     if (!event.text || !event.text.startsWith('JOINER_SYNC')) return;
 
@@ -94,30 +94,59 @@ function register(app) {
 
 /**
  * Resolve a Slack People-type field to { name, email }.
- * Input can be: "<@U0ABC123>", "U0ABC123", "John Doe", or empty.
+ * Input can be: "<@U0ABC123>", "@Smit Patel", "John Doe", or empty.
  */
 async function resolveUser(client, raw) {
   const empty = { name: '', email: '' };
   if (!raw) return empty;
 
-  // Extract user ID from <@U123> or <@U123|name> format
+  // Try 1: Extract user ID from <@U123> or <@U123|name> format
   const match = raw.match(/<@(U[A-Z0-9]+)(?:\|[^>]*)?>/);
-  const userId = match ? match[1] : null;
-
-  if (!userId) {
-    // Not a People-type value — treat as plain text name
-    return { name: raw, email: '' };
+  if (match) {
+    return await lookupById(client, match[1], raw);
   }
 
+  // Try 2: Handle @Name format (Workflow Builder People fields)
+  const cleanName = raw.startsWith('@') ? raw.slice(1).trim() : raw.trim();
+  if (!cleanName) return empty;
+
+  // Try to find user by searching workspace members
+  try {
+    const res = await client.users.list({ limit: 500 });
+    const members = res.members || [];
+    const found = members.find(m => {
+      if (m.deleted || m.is_bot) return false;
+      const real = (m.real_name || '').toLowerCase();
+      const display = (m.profile?.display_name || '').toLowerCase();
+      const target = cleanName.toLowerCase();
+      return real === target || display === target;
+    });
+
+    if (found) {
+      return {
+        name: found.real_name || found.profile?.display_name || cleanName,
+        email: found.profile?.email || '',
+      };
+    }
+  } catch (err) {
+    console.warn(`Could not search users for "${cleanName}":`, err.message);
+  }
+
+  // Fallback: return the name as-is, no email
+  return { name: cleanName, email: '' };
+}
+
+async function lookupById(client, userId, fallbackName) {
   try {
     const res = await client.users.info({ user: userId });
     const profile = res.user?.profile || {};
-    const name = res.user?.real_name || profile.real_name || profile.display_name || '';
-    const email = profile.email || '';
-    return { name, email };
+    return {
+      name: res.user?.real_name || profile.real_name || profile.display_name || '',
+      email: profile.email || '',
+    };
   } catch (err) {
     console.warn(`Could not resolve user ${userId}:`, err.message);
-    return { name: raw, email: '' };
+    return { name: fallbackName || '', email: '' };
   }
 }
 
