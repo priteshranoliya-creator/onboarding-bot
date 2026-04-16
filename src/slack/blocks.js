@@ -207,22 +207,22 @@ function generalWelcomeBlocks(joiner) {
 
 function joineeDmBlocks(joiner, configData) {
   const links = [];
-  if (configData['Leave Policy Link'])
-    links.push(`<${configData['Leave Policy Link']}|Leave Policy>`);
-  if (configData['POSH Policy Link'])
-    links.push(`<${configData['POSH Policy Link']}|POSH Policy>`);
-  if (configData['WFH Policy Link'])
-    links.push(`<${configData['WFH Policy Link']}|WFH Policy>`);
-  if (configData['Asset Policy Link'])
-    links.push(`<${configData['Asset Policy Link']}|Asset Policy>`);
-  if (configData['Employee Referral Policy Link'])
-    links.push(`<${configData['Employee Referral Policy Link']}|Referral Policy>`);
-  if (configData['Employment Separation Policy Link'])
-    links.push(`<${configData['Employment Separation Policy Link']}|Separation Policy>`);
-  if (configData['Razorpay Reimbursement Process Link'])
-    links.push(`<${configData['Razorpay Reimbursement Process Link']}|Reimbursement Process>`);
+  if (configData.leavePolicyLink)
+    links.push(`<${configData.leavePolicyLink}|Leave Policy>`);
+  if (configData.poshPolicyLink)
+    links.push(`<${configData.poshPolicyLink}|POSH Policy>`);
+  if (configData.wfhPolicyLink)
+    links.push(`<${configData.wfhPolicyLink}|WFH Policy>`);
+  if (configData.assetPolicyLink)
+    links.push(`<${configData.assetPolicyLink}|Asset Policy>`);
+  if (configData.referralPolicyLink)
+    links.push(`<${configData.referralPolicyLink}|Referral Policy>`);
+  if (configData.separationPolicyLink)
+    links.push(`<${configData.separationPolicyLink}|Separation Policy>`);
+  if (configData.reimbursementLink)
+    links.push(`<${configData.reimbursementLink}|Reimbursement Process>`);
 
-  return [
+  const blocks = [
     {
       type: 'header',
       text: { type: 'plain_text', text: `Welcome to devx Ai Labs, ${joiner.name.split(' ')[0]}!` },
@@ -237,40 +237,43 @@ function joineeDmBlocks(joiner, configData) {
     {
       type: 'section',
       text: mrkdwn(
-        `*Your Buddy:* ${joiner.buddyName} — they'll help you settle in today.\n` +
-          `*Your POD Leader:* ${joiner.podLeaderName} — you'll meet them soon.\n` +
-          `*Your POD:* ${joiner.podName}`
+        `*Your Buddy:* ${joiner.buddyName || 'TBD'} — they'll help you settle in today.\n` +
+          `*Your POD Leader:* ${joiner.podLeaderName || 'TBD'} — you'll meet them soon.\n` +
+          `*Your POD:* ${joiner.podName || 'TBD'}`
       ),
-    },
-    {
-      type: 'section',
-      text: mrkdwn(
-        '*Company Policies:*\n' + links.map((l) => `  ${l}`).join('\n')
-      ),
-    },
-    {
-      type: 'section',
-      text: mrkdwn(
-        (configData['Acknowledgment Form Link']
-          ? `*Acknowledgment Form:* <${configData['Acknowledgment Form Link']}|Sign here>\n`
-          : '') +
-          (configData['Document Upload Form Link']
-            ? `*Document Upload:* <${configData['Document Upload Form Link']}|Upload here>\n`
-            : '') +
-          (configData['Payroll Process Link']
-            ? `*Payroll:* <${configData['Payroll Process Link']}|Razorpay Payroll>`
-            : '')
-      ),
-    },
-    {
-      type: 'context',
-      elements: [
-        mrkdwn(
-          `HR Contact: ${configData['HR Contact Name'] || 'HR'} — ${configData['HR Contact Email'] || ''}`
-        ),
-      ],
     },
   ];
+
+  if (links.length > 0) {
+    blocks.push({
+      type: 'section',
+      text: mrkdwn('*Company Policies:*\n' + links.map((l) => `  ${l}`).join('\n')),
+    });
+  }
+
+  const formLinks = [];
+  if (configData.acknowledgmentFormLink)
+    formLinks.push(`*Acknowledgment Form:* <${configData.acknowledgmentFormLink}|Sign here>`);
+  if (configData.docUploadFormLink)
+    formLinks.push(`*Document Upload:* <${configData.docUploadFormLink}|Upload here>`);
+  if (configData.payrollLink)
+    formLinks.push(`*Payroll:* <${configData.payrollLink}|Razorpay Payroll>`);
+
+  if (formLinks.length > 0) {
+    blocks.push({
+      type: 'section',
+      text: mrkdwn(formLinks.join('\n')),
+    });
+  }
+
+  blocks.push({
+    type: 'context',
+    elements: [
+      mrkdwn(`HR Contact: ${configData.hrContactName || 'HR'} — ${configData.hrContactEmail || ''}`),
+    ],
+  });
+
+  return blocks;
 }
 
 // ─── Joinee Notification (when checklist item is checked) ────────
