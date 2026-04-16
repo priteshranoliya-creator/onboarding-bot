@@ -23,8 +23,7 @@ module.exports = function welcomeEmail(joiner, cfg) {
     htmlInfoCard([
       { label: 'Office Address', value: cfg.officeAddress },
       { label: 'Reporting Time', value: cfg.reportingTime + ' <span style="color:#94a3b8;">(first day only)</span>' },
-      { label: 'Reporting Date', value: joiner.joiningDateLong },
-      { label: 'Reporting Day', value: joiner.joiningDay },
+      { label: 'Reporting Date', value: `${joiner.joiningDay}, ${joiner.joiningDateLong}` },
       { label: 'Joining Buddy', value: joiner.buddyName },
       { label: 'HR Contact', value: cfg.hrContactName },
     ]),
@@ -56,7 +55,7 @@ module.exports = function welcomeEmail(joiner, cfg) {
     htmlCallout('#fffbeb', '#fde68a', `
       ${htmlSectionTitle('📌', 'Things to Note')}
       <ul style="margin:0;padding-left:18px;font-size:13px;color:#78350f;">
-        <li style="margin-bottom:6px;">🍽️ ${cfg.lunchNote}</li>
+        <li style="margin-bottom:6px;">🍽️ Please do not bring your lunch on ${joiner.joiningDay}. We have arranged an onboarding lunch for you.</li>
         <li style="margin-bottom:6px;">💻 A work device will be provided for official purposes.</li>
         <li>📄 Upload required documents via this <a href="${cfg.docUploadFormLink}" style="color:#92400e;font-weight:600;">form</a>. <span style="color:#a16207;">(Ignore if done)</span></li>
       </ul>
