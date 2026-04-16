@@ -333,36 +333,61 @@ function onboardStatusBlocks(joiner, state) {
 // ─── Slash Command: /checklist pending items ─────────────────────
 
 function pendingItemsBlocks(joiner, state) {
-  const { CHECKLIST_CATEGORIES: cats } = require('./checklist-items');
+  const { CHECKLIST_CATEGORIES: cats, getTotalItemCount, getCheckedCount } = require('./checklist-items');
+  const total = getTotalItemCount();
+  const done = getCheckedCount(state);
+  const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+  const progressBar = buildProgressBar(done, total);
+
   const blocks = [
     {
       type: 'header',
-      text: { type: 'plain_text', text: `Pending Items — ${joiner.name}` },
+      text: { type: 'plain_text', text: `Checklist — ${joiner.name}` },
+    },
+    {
+      type: 'section',
+      text: mrkdwn(`${progressBar}  *${done}/${total}* completed (${pct}%)`),
     },
     { type: 'divider' },
   ];
 
   let hasPending = false;
   for (const cat of cats) {
-    const pending = cat.items.filter((i) => !state[i.id]);
-    if (pending.length === 0) continue;
-    hasPending = true;
+    const doneItems = cat.items.filter((i) => state[i.id]);
+    const pendingItems = cat.items.filter((i) => !state[i.id]);
+    const catEmoji = pendingItems.length === 0 ? ':white_check_mark:' : ':clipboard:';
+
+    let lines = '';
+    for (const item of cat.items) {
+      if (state[item.id]) {
+        lines += `\n  :white_check_mark:  ~${item.label}~`;
+      } else {
+        lines += `\n  :black_square_button:  ${item.label}`;
+        hasPending = true;
+      }
+    }
+
     blocks.push({
       type: 'section',
-      text: mrkdwn(
-        `*${cat.label}:*\n` + pending.map((i) => `  :white_square: ${i.label}`).join('\n')
-      ),
+      text: mrkdwn(`${catEmoji} *${cat.label}* — ${doneItems.length}/${cat.items.length}${lines}`),
     });
   }
 
   if (!hasPending) {
+    blocks.push({ type: 'divider' });
     blocks.push({
       type: 'section',
-      text: mrkdwn(':tada: All items completed!'),
+      text: mrkdwn(':tada: *All items completed!* Great job.'),
     });
   }
 
   return blocks;
+}
+
+function buildProgressBar(done, total) {
+  const filled = total > 0 ? Math.round((done / total) * 10) : 0;
+  const empty = 10 - filled;
+  return ':large_green_square:'.repeat(filled) + ':white_large_square:'.repeat(empty);
 }
 
 // ─── Slash Command: /upcoming ────────────────────────────────────
