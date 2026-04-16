@@ -43,5 +43,5 @@ module.exports = function handbookEmail(joiner, cfg) {
     htmlSignature(cfg),
   ].join('');
 
-  return { subject, html: htmlShell(header, body), to: joiner.personalEmail };
+  return { subject, html: htmlShell(header, body), to: joiner.personalEmail, cc: joiner.workEmail };
 };
