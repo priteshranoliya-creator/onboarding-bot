@@ -21,5 +21,6 @@ module.exports = {
   poshPolicyLink: 'https://drive.google.com/file/d/1oIrJXHhBs29PQIY2M7pcDETuPS8kRPY5/view?usp=sharing',
   reimbursementLink: 'https://drive.google.com/file/d/1cj-qPQJ7p7bhMrTCCM-69El-T8Q4zZWk/view?usp=sharing',
   wfhPolicyLink: 'https://drive.google.com/file/d/1DZQRtkVA2uI4TDSIDTEu0v3VnVZj0bit/view?usp=sharing',
+  plumHandbookLink: 'https://drive.google.com/file/d/1zYO1DPKrW6vrSFKo9cY_ue35ARoLdooT/view?ts=69e0b50a',
   lunchNote: 'Please do not bring your lunch on Monday. We have arranged an onboarding lunch for you.',
 };

@@ -20,6 +20,7 @@ module.exports = function handbookEmail(joiner, cfg) {
     ['POSH Policy', cfg.poshPolicyLink],
     ['Reimbursement Process', cfg.reimbursementLink],
     ['Work From Home (WFH) Policy', cfg.wfhPolicyLink],
+    ['Plum Health Insurance Handbook', cfg.plumHandbookLink],
   ];
 
   const policyCards = policies.map(p => htmlPolicyCard(p[0], p[1])).join('');
@@ -43,5 +44,5 @@ module.exports = function handbookEmail(joiner, cfg) {
     htmlSignature(cfg),
   ].join('');
 
-  return { subject, html: htmlShell(header, body), to: joiner.personalEmail };
+  return { subject, html: htmlShell(header, body), to: joiner.workEmail };
 };
