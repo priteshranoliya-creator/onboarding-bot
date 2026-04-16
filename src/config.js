@@ -4,6 +4,7 @@ module.exports = {
   SLACK_SIGNING_SECRET: process.env.SLACK_SIGNING_SECRET,
   SLACK_HR_CHANNEL: process.env.SLACK_HR_CHANNEL,
   SLACK_GENERAL_CHANNEL: process.env.SLACK_GENERAL_CHANNEL,
+  SLACK_BOT_SYNC_CHANNEL: process.env.SLACK_BOT_SYNC_CHANNEL,
   HR_EMAIL: process.env.HR_EMAIL || 'pooja.soni@devxlabs.ai',
 
   // Secrets

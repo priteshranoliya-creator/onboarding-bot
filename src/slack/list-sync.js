@@ -6,8 +6,9 @@
 // ─────────────────────────────────────────────────────────────
 
 const db = require('../db/client');
+const config = require('../config');
 
-const BOT_SYNC_CHANNEL = 'C0ATTDDNCJU';
+const BOT_SYNC_CHANNEL = config.SLACK_BOT_SYNC_CHANNEL;
 
 function register(app) {
   app.event('message', async ({ event, client }) => {
