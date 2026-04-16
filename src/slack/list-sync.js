@@ -62,6 +62,13 @@ function register(app) {
         return;
       }
 
+      // Only sync Confirmed joiners — skip Rejected, Pending, Joined, etc.
+      const status = (data.status || '').toLowerCase();
+      if (status !== 'confirmed') {
+        console.log(`JOINER_SYNC: skipping ${data.name} (status: ${data.status})`);
+        return;
+      }
+
       // Resolve People-type fields: <@U123ABC> or @Name → { name, email }
       const buddy = await resolveUser(client, data.buddy);
       const podLeader = await resolveUser(client, data.podLeader);
