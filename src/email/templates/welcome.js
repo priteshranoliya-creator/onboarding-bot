@@ -31,6 +31,8 @@ module.exports = function welcomeEmail(joiner, cfg) {
 
     htmlP(`You'll be joining the <strong>${joiner.podName}</strong> POD, led by <strong>${joiner.podLeaderName}</strong>. 💼`),
 
+    joiner.mode ? htmlP(`*Work Mode:* <strong>${joiner.mode}</strong>`) : '',
+
     htmlSectionTitle('🔐', 'Login Credentials'),
     htmlAccentBlock('#0f172a', `
       <table style="font-size:14px;border-collapse:collapse;">
@@ -64,5 +66,5 @@ module.exports = function welcomeEmail(joiner, cfg) {
     htmlSignature(cfg),
   ].join('');
 
-  return { subject, html: htmlShell(header, body), to: joiner.personalEmail, cc: joiner.workEmail };
+  return { subject, html: htmlShell(header, body), to: joiner.personalEmail };
 };
