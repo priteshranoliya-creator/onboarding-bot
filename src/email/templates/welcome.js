@@ -66,5 +66,5 @@ module.exports = function welcomeEmail(joiner, cfg) {
     htmlSignature(cfg),
   ].join('');
 
-  return { subject, html: htmlShell(header, body), to: joiner.personalEmail, cc: joiner.workEmail };
+  return { subject, html: htmlShell(header, body), to: joiner.personalEmail };
 };
