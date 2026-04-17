@@ -14,15 +14,13 @@ module.exports = function buddyEmail(joiner, cfg) {
   const header = htmlHeader('Joining Buddy Assignment', `${joiner.name} is counting on you`);
 
   const responsibilities = [
-    'Help them settle in by explaining team norms, work principles, and company culture.',
-    'Be available to answer informal questions about day-to-day processes.',
-    'Direct the new joiner to the right person or resource when needed.',
-    'Introduce the new joiner to teammates and cross-functional colleagues.',
-    'Facilitate inclusion in team meetings, group chats, and social activities.',
-    'Provide a safe space to ask small or informal questions without judgment.',
-    'Gather feedback from the new joiner about their onboarding experience.',
-    'Share insights with the HR team if any improvements are needed.',
-    '<strong>Give them a complete office tour on Day 1.</strong>',
+    'Be their first point of contact on Day 1.',
+    'Introduce them to the team and nearby colleagues.',
+    'Help them set up their workstation and tools.',
+    'Walk them through daily routines (standup, lunch, check-in/check-out).',
+    'Answer any questions they have in the first week.',
+    'Make sure they feel welcome and included.',
+    '<strong>Check in with them at the end of the day.</strong>',
   ];
 
   const listItems = responsibilities.map(r =>

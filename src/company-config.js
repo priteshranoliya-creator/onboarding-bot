@@ -10,7 +10,7 @@ module.exports = {
   hrContactPhone: '7069 249 291',
   hrContactEmail: 'pooja.soni@devxlabs.ai',
   hrDesignation: 'HR Manager | devx Ai Labs',
-  payrollLink: 'https://your-razorpay-payroll-link.com',
+  payrollLink: 'https://payroll.razorpay.com/dashboard',
   slackLink: 'https://devxlabs.slack.com',
   docUploadFormLink: 'https://forms.gle/8URmMNg3CCBfaJL79',
   acknowledgmentFormLink: 'https://docs.google.com/forms/d/e/1FAIpQLSd0yHvVNlrE9TYQtwVSUWc-_Ocz2NCKPEIMl4-PJocd6QZpug/alreadyresponded',

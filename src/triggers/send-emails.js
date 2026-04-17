@@ -178,7 +178,14 @@ async function handleD1Emails(joiner, joiningDateLong, stats) {
   await notify.dmPodLeader(joiner);
   await notify.dmHr(joiner, threadTs);
 
-  await db.addLog(joiner.name, 'D-1: Emails sent + Slack notifications');
+  // D-1: DM to admin/finance about expenses + Plum
+  await dmUserByEmail(
+    'himanshu.velvan@devxlabs.ai',
+    `:money_with_wings: *Expense heads-up — ${joiner.name} joining tomorrow*`,
+    `Hi Himanshu,\nThis is to inform you in advance about the expenses scheduled for tomorrow for the new joinee:\n\n*New Joinee Lunch:* ₹300\n*Buddy Lunch:* ₹300\n\nAdditionally, please arrange to add the new joinee to the *Plum account* and load the applicable amount.\n\nThank you.`
+  );
+
+  await db.addLog(joiner.name, 'D-1: Emails sent + Slack notifications + expense DM');
   stats.emailsSent++;
 
   await dmHrAlert(

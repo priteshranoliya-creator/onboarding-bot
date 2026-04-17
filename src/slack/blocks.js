@@ -115,14 +115,12 @@ function buddyDmBlocks(joiner) {
       text: mrkdwn(
         '*Your responsibilities:*\n\n' +
           '1. Be their first point of contact on Day 1\n' +
-          '2. Give them an office tour (workstations, meeting rooms, pantry, restrooms)\n' +
-          '3. Introduce them to the team and nearby colleagues\n' +
-          '4. Help them set up their workstation and tools\n' +
-          '5. Walk them through daily routines (standup, lunch, check-in/check-out)\n' +
-          '6. Show them Slack channels, calendar invites, and communication norms\n' +
-          '7. Answer any questions they have in the first week\n' +
-          '8. Make sure they feel welcome and included\n' +
-          '9. Check in with them at end of Day 1 and Day 3'
+          '2. Introduce them to the team and nearby colleagues\n' +
+          '3. Help them set up their workstation and tools\n' +
+          '4. Walk them through daily routines (standup, lunch, check-in/check-out)\n' +
+          '5. Answer any questions they have in the first week\n' +
+          '6. Make sure they feel welcome and included\n' +
+          '7. Check in with them at the end of the day'
       ),
     },
     {
@@ -164,9 +162,10 @@ function podLeaderDmBlocks(joiner) {
       type: 'section',
       text: mrkdwn(
         `*Work Email:* ${joiner.workEmail}\n\n` +
+          'Let me know a suitable time for a quick handshake with your new team member.\n\n' +
           '*Action items:*\n' +
-          '1. Schedule a handshake meeting within the first 2 days\n' +
-          '2. Introduce them to the POD and share current projects\n' +
+          '1. Schedule a handshake meeting within the first day\n' +
+          '2. Introduce them to the POD\n' +
           '3. Set up a team intro call\n' +
           '4. Assign starter tasks for the first week'
       ),

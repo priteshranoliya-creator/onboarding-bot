@@ -7,12 +7,12 @@
     "dev": "nodemon scripts/server.js"
   },
   "dependencies": {
-    "@neondatabase/serverless": "^1.0.2",
     "@slack/bolt": "^4.1.0",
     "@slack/web-api": "^7.8.0",
     "dotenv": "^16.4.7",
     "googleapis": "^144.0.0",
-    "nodemailer": "^8.0.5"
+    "nodemailer": "^8.0.5",
+    "pg": "^8.20.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"

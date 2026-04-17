@@ -47,17 +47,17 @@ module.exports = function welcomeEmail(joiner, cfg) {
     `),
 
     htmlSectionTitle('🚀', 'Onboarding Links'),
-    `<div style="margin-bottom:24px;">
-      <a href="${cfg.payrollLink}" style="display:inline-block;background-color:#f1f5f9;border:1px solid #e2e8f0;border-radius:8px;padding:10px 18px;margin:0 8px 8px 0;text-decoration:none;color:#1e293b;font-size:13px;font-weight:600;">💰 Payroll Process</a>
-      <a href="${cfg.slackLink}" style="display:inline-block;background-color:#f1f5f9;border:1px solid #e2e8f0;border-radius:8px;padding:10px 18px;margin:0 8px 8px 0;text-decoration:none;color:#1e293b;font-size:13px;font-weight:600;">💬 Slack Workspace</a>
-    </div>`,
+    `<ul style="margin:0 0 24px 0;padding-left:20px;font-size:14px;color:#334155;">
+      <li style="margin-bottom:8px;"><a href="${cfg.payrollLink}" style="color:#2563eb;text-decoration:underline;font-weight:500;">Razorpay Payroll Dashboard</a></li>
+      <li style="margin-bottom:8px;"><a href="${cfg.slackLink}" style="color:#2563eb;text-decoration:underline;font-weight:500;">Slack Workspace</a></li>
+    </ul>`,
 
     htmlCallout('#fffbeb', '#fde68a', `
       ${htmlSectionTitle('📌', 'Things to Note')}
       <ul style="margin:0;padding-left:18px;font-size:13px;color:#78350f;">
         <li style="margin-bottom:6px;">🍽️ Please do not bring your lunch on ${joiner.joiningDay}. We have arranged an onboarding lunch for you.</li>
         <li style="margin-bottom:6px;">💻 A work device will be provided for official purposes.</li>
-        <li>📄 Upload required documents via this <a href="${cfg.docUploadFormLink}" style="color:#92400e;font-weight:600;">form</a>. <span style="color:#a16207;">(Ignore if done)</span></li>
+        <li style="margin-bottom:6px;">📄 <strong>Action required:</strong> Please upload your required documents via <a href="${cfg.docUploadFormLink}" style="color:#92400e;font-weight:700;text-decoration:underline;">this form</a> before Day 1. <span style="color:#a16207;">(Skip if already done)</span></li>
       </ul>
     `),
 
