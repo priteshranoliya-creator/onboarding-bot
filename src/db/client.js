@@ -99,10 +99,17 @@ function mapRow(row) {
 }
 
 function formatDateDDMMYYYY(date) {
-  const d = String(date.getUTCDate()).padStart(2, '0');
-  const m = String(date.getUTCMonth() + 1).padStart(2, '0');
-  const y = date.getUTCFullYear();
-  return `${d}/${m}/${y}`;
+  // Format the stored DATE value as-is, independent of the runtime TZ.
+  // node-pg returns DATE as a JS Date at local midnight; converting via
+  // UTC (or local) getters introduces a day shift on Vercel (UTC) vs
+  // local IST. Use Intl with Asia/Kolkata so we always get the date the
+  // HR team entered, regardless of where this code runs.
+  const parts = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Asia/Kolkata',
+    day: '2-digit', month: '2-digit', year: 'numeric',
+  }).formatToParts(date);
+  const get = (t) => parts.find(p => p.type === t).value;
+  return `${get('day')}/${get('month')}/${get('year')}`;
 }
 
 // ─── Config (hardcoded — no DB round-trip) ──────────────────

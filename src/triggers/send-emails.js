@@ -295,4 +295,4 @@ function formatJoiningDate(dateStr) {
   }
 }
 
-module.exports = { handler };
+module.exports = { handler, handleD1Emails, handleJoiningDay, formatJoiningDate };
