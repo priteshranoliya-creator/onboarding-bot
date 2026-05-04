@@ -49,12 +49,23 @@ function register(app) {
         }
       }
 
-      // Clean Slack auto-linked emails: <mailto:a@b.com|a@b.com> → a@b.com
+      // Clean Slack-mangled values:
+      //  - <mailto:a@b.com|a@b.com> → a@b.com
+      //  - <http://example.com|example.com> → example.com
+      //  - HTML entities (&amp; &lt; &gt; &quot; &#39;) → real chars
+      // Slack auto-linkifies anything that looks like a URL/email and
+      // HTML-escapes special characters in plain text. Both must be
+      // reversed before storing, otherwise tempPassword and emails
+      // arrive corrupt (e.g. "abc&amp;" instead of "abc&").
       for (const key of Object.keys(data)) {
-        if (typeof data[key] === 'string') {
-          data[key] = data[key].replace(/<mailto:([^|>]+)\|[^>]+>/g, '$1');
-          data[key] = data[key].replace(/<mailto:([^>]+)>/g, '$1');
-        }
+        if (typeof data[key] !== 'string') continue;
+        let v = data[key];
+        v = v.replace(/<mailto:([^|>]+)\|[^>]+>/g, '$1');
+        v = v.replace(/<mailto:([^>]+)>/g, '$1');
+        v = v.replace(/<https?:\/\/[^|>]+\|([^>]+)>/g, '$1');
+        v = v.replace(/<(https?:\/\/[^>]+)>/g, '$1');
+        v = decodeHtmlEntities(v);
+        data[key] = v;
       }
 
       if (!data.workEmail) {
@@ -180,6 +191,17 @@ async function lookupById(client, userId, fallbackName) {
     console.warn(`Could not resolve user ${userId}:`, err.message);
     return { name: fallbackName || '', email: '' };
   }
+}
+
+function decodeHtmlEntities(s) {
+  return s
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&#x27;/g, "'")
+    .replace(/&nbsp;/g, ' ');
 }
 
 module.exports = { register };
