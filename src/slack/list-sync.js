@@ -73,9 +73,11 @@ function register(app) {
         return;
       }
 
-      // Only sync Confirmed joiners — skip Rejected, Pending, Joined, etc.
+      // Skip only genuinely dead entries — sync everything else (Pending, Offer Accepted, Confirmed, etc.)
+      // so HR gets D-7→D-1 alerts even if they forgot to mark Confirmed.
+      const SKIP_STATUSES = ['rejected', 'declined', 'not interested', 'withdrawn', 'offer declined'];
       const status = (data.status || '').toLowerCase();
-      if (status !== 'confirmed') {
+      if (SKIP_STATUSES.includes(status)) {
         console.log(`JOINER_SYNC: skipping ${data.name} (status: ${data.status})`);
         return;
       }
