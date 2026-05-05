@@ -35,7 +35,7 @@ module.exports = function buddyEmail(joiner, cfg) {
       { label: 'Name', value: joiner.name },
       { label: 'Role', value: joiner.role },
       { label: 'POD', value: `<strong style="color:#2563eb;">${joiner.podName}</strong>` },
-      { label: 'Joining Date', value: `${joiner.joiningDay}, ${joiner.joiningDateLong}` },
+      { label: 'Joining Date', value: joiner.joiningDateLong },
     ]),
 
     htmlAccentBlock('#2563eb', `

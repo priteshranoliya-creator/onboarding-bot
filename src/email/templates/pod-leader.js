@@ -31,7 +31,7 @@ module.exports = function podLeaderEmail(joiner, cfg) {
     htmlInfoCard([
       { label: 'Name', value: joiner.name },
       { label: 'Role', value: joiner.role },
-      { label: 'Joining Date', value: `${joiner.joiningDay}, ${joiner.joiningDateLong}` },
+      { label: 'Joining Date', value: joiner.joiningDateLong },
       { label: 'Mode', value: joiner.mode || '-' },
       { label: 'Buddy', value: joiner.buddyName || '-' },
       { label: 'Work Email', value: `<a href="mailto:${joiner.workEmail}" style="color:#2563eb;text-decoration:none;">${joiner.workEmail}</a>` },

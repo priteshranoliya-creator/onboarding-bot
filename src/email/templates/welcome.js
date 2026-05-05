@@ -23,7 +23,7 @@ module.exports = function welcomeEmail(joiner, cfg) {
     htmlInfoCard([
       { label: 'Office Address', value: cfg.officeAddress },
       { label: 'Reporting Time', value: cfg.reportingTime + ' <span style="color:#94a3b8;">(first day only)</span>' },
-      { label: 'Reporting Date', value: `${joiner.joiningDay}, ${joiner.joiningDateLong}` },
+      { label: 'Reporting Date', value: joiner.joiningDateLong },
       { label: 'Joining Buddy', value: joiner.buddyName },
       { label: 'HR Contact', value: cfg.hrContactName },
     ]),
@@ -34,14 +34,14 @@ module.exports = function welcomeEmail(joiner, cfg) {
 
     htmlSectionTitle('🔐', 'Login Credentials'),
     htmlAccentBlock('#0f172a', `
-      <table style="font-size:14px;border-collapse:collapse;">
+      <table style="font-size:14px;border-collapse:collapse;width:100%;">
         <tr>
-          <td style="padding:5px 16px 5px 0;color:#64748b;background-color:#f8fafc;">Work Email</td>
-          <td style="padding:5px 0;background-color:#f8fafc;"><a href="mailto:${joiner.workEmail}" style="color:#2563eb;text-decoration:none;font-weight:600;">${joiner.workEmail}</a></td>
+          <td style="padding:5px 14px 5px 0;color:#64748b;background-color:#f8fafc;white-space:nowrap;vertical-align:top;">Work Email</td>
+          <td style="padding:5px 0;background-color:#f8fafc;word-break:break-all;"><a href="mailto:${joiner.workEmail}" style="color:#2563eb;text-decoration:none;font-weight:600;">${joiner.workEmail}</a></td>
         </tr>
         <tr>
-          <td style="padding:5px 16px 5px 0;color:#64748b;background-color:#f8fafc;">Password</td>
-          <td style="padding:5px 0;background-color:#f8fafc;"><code style="background-color:#e2e8f0;color:#0f172a;padding:4px 12px;border-radius:6px;font-family:'SF Mono',Consolas,monospace;font-size:13px;">${joiner.tempPassword}</code></td>
+          <td style="padding:5px 14px 5px 0;color:#64748b;background-color:#f8fafc;white-space:nowrap;vertical-align:top;">Password</td>
+          <td style="padding:5px 0;background-color:#f8fafc;"><code style="background-color:#e2e8f0;color:#0f172a;padding:4px 12px;border-radius:6px;font-family:'SF Mono',Consolas,monospace;font-size:13px;word-break:break-all;">${joiner.tempPassword}</code></td>
         </tr>
       </table>
     `),
