@@ -3,7 +3,7 @@
  *
  * For each joiner with status "Confirmed":
  *
- *   D-7 to D-2:  Validation only — alert HR if fields missing, NO emails
+ *   D-10 to D-2: Validation only — alert HR if fields missing, NO emails
  *   D-3:         Reminder to HR (checklist progress + urgency)
  *   D-1:         Send 4 emails + Slack announcements (if all fields ready)
  *                 If fields STILL missing → urgent alert to HR
@@ -55,6 +55,7 @@ async function handler(req, res) {
     const joiners = await db.getJoiners();
     const configData = await db.getConfig();
     const stats = { emailsSent: 0, reminders: 0, welcomes: 0, alerts: 0 };
+    const d1OnsiteSent = []; // joiners whose D-1 emails fired AND mode === onsite
 
     for (const joiner of joiners) {
       if (!joiner.joiningDate) continue;
@@ -62,14 +63,19 @@ async function handler(req, res) {
       const daysUntil = daysFromTodayIST(joiner.joiningDate);
       const joiningDateLong = formatJoiningDate(joiner.joiningDate);
 
-      // ── D-7 to D-2: Validation alerts only ────────────────
-      if (daysUntil >= 2 && daysUntil <= 7) {
+      // ── D-10 to D-2: Validation alerts only ────────────────
+      if (daysUntil >= 2 && daysUntil <= 10) {
         await handlePreJoiningValidation(joiner, daysUntil, joiningDateLong, stats);
       }
 
       // ── D-1: Send 4 emails ───────────────────────────────
       if (daysUntil === 1) {
-        await handleD1Emails(joiner, joiningDateLong, stats);
+        const sent = await handleD1Emails(joiner, joiningDateLong, stats);
+        // Only consolidate Himanshu DM for onsite joiners whose emails fired now.
+        // Blank mode is excluded — don't bill expenses for unknown mode.
+        if (sent && (joiner.mode || '').toLowerCase().trim() === 'onsite') {
+          d1OnsiteSent.push(joiner);
+        }
       }
 
       // ── D-0: Joining day ─────────────────────────────────
@@ -83,6 +89,10 @@ async function handler(req, res) {
       }
     }
 
+    if (d1OnsiteSent.length > 0) {
+      await sendHimanshuExpenseDM(d1OnsiteSent);
+    }
+
     console.log(`Daily cron complete:`, stats);
     res.status(200).json({ ok: true, ...stats });
   } catch (err) {
@@ -91,7 +101,7 @@ async function handler(req, res) {
   }
 }
 
-// ─── D-7 to D-2: Validation only (no emails) ──────────────
+// ─── D-10 to D-2: Validation only (no emails) ──────────────
 
 async function handlePreJoiningValidation(joiner, daysUntil, joiningDateLong, stats) {
   const missing = getMissingFields(joiner);
@@ -106,10 +116,10 @@ async function handlePreJoiningValidation(joiner, daysUntil, joiningDateLong, st
     );
     await db.addLog(joiner.name, `D-${daysUntil}: Missing fields alert — ${missing.map(f => f.key).join(', ')}`);
     stats.alerts++;
-  } else if (daysUntil === 7) {
-    // D-7: All fields ready — confirm to HR
+  } else if (daysUntil === 10) {
+    // D-10: All fields ready — confirm to HR
     await dmHrAlert(
-      `:white_check_mark: *All set — ${joiner.name} joins in 7 days*`,
+      `:white_check_mark: *All set — ${joiner.name} joins in 10 days*`,
       `All information is complete for *${joiner.name}*.\n*Joining:* ${joiningDateLong}\n*Role:* ${joiner.role} | *POD:* ${joiner.podName}\n*Buddy:* ${joiner.buddyName}\n\nEmails will be sent automatically on D-1.`
     );
     stats.reminders++;
@@ -140,7 +150,7 @@ async function handleD1Emails(joiner, joiningDateLong, stats) {
       `Make sure everything is ready.\n*Role:* ${joiner.role} | *POD:* ${joiner.podName}\n*Buddy:* ${joiner.buddyName || 'Not assigned'}\n*Emails:* Already sent :white_check_mark:`
     );
     stats.reminders++;
-    return;
+    return false;
   }
 
   const missing = getMissingFields(joiner);
@@ -154,7 +164,7 @@ async function handleD1Emails(joiner, joiningDateLong, stats) {
     );
     await db.addLog(joiner.name, `D-1: URGENT — emails blocked, missing: ${missing.map(f => f.key).join(', ')}`);
     stats.alerts++;
-    return;
+    return false;
   }
 
   // All fields ready → send 4 emails
@@ -178,20 +188,36 @@ async function handleD1Emails(joiner, joiningDateLong, stats) {
   await notify.dmPodLeader(joiner);
   await notify.dmHr(joiner, threadTs);
 
-  // D-1: DM to admin/finance about expenses + Plum
-  await dmUserByEmail(
-    'himanshu.velvan@devxlabs.ai',
-    `:money_with_wings: *Expense heads-up — ${joiner.name} joining tomorrow*`,
-    `Hi Himanshu,\nThis is to inform you in advance about the expenses scheduled for tomorrow for the new joinee:\n\n*New Joinee Lunch:* ₹300\n*Buddy Lunch:* ₹300\n\nAdditionally, please arrange to add the new joinee to the *Plum account* and load the applicable amount.\n\nThank you.`
-  );
-
-  await db.addLog(joiner.name, 'D-1: Emails sent + Slack notifications + expense DM');
+  await db.addLog(joiner.name, 'D-1: Emails sent + Slack notifications');
   stats.emailsSent++;
 
   await dmHrAlert(
     `:white_check_mark: *Onboarding emails sent — ${joiner.name}*`,
     `All 4 emails sent successfully. ${joiner.name} joins *tomorrow* (${joiningDateLong}).\n*Role:* ${joiner.role} | *POD:* ${joiner.podName}\n*Buddy:* ${joiner.buddyName}`
   );
+
+  return true;
+}
+
+// ─── Himanshu expense DM (consolidated for onsite joiners) ─
+
+async function sendHimanshuExpenseDM(joiners) {
+  const n = joiners.length;
+  let title, body;
+
+  if (n === 1) {
+    const j = joiners[0];
+    title = `:money_with_wings: *Expense heads-up — ${j.name} joining tomorrow*`;
+    body = `Hi Himanshu,\nThis is to inform you in advance about the expenses scheduled for tomorrow for the new joinee:\n\n*New Joinee Lunch:* ₹300\n*Buddy Lunch:* ₹300\n\nAdditionally, please arrange to add the new joinee to the *Plum account* and load the applicable amount.\n\nThank you.`;
+  } else {
+    const list = joiners.map(j => `• ${j.name}`).join('\n');
+    const lunchTotal = 300 * n;
+    title = `:money_with_wings: *Expense heads-up — ${n} new joiners tomorrow*`;
+    body = `Hi Himanshu,\nThe following onsite joiners are starting tomorrow:\n\n${list}\n\n*New Joinee Lunch:* ₹${lunchTotal} (₹300 × ${n})\n*Buddy Lunch:* ₹${lunchTotal} (₹300 × ${n})\n\nPlease also add them to the *Plum account* and load the applicable amount for each.\n\nThank you.`;
+  }
+
+  await dmUserByEmail('himanshu.velvan@devxlabs.ai', title, body);
+  await db.addLog('Himanshu DM', `D-1 expense DM sent for ${n} onsite joiner(s): ${joiners.map(j => j.name).join(', ')}`);
 }
 
 // ─── D-0: Joining day ──────────────────────────────────────

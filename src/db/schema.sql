@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS joiners (
   mode          TEXT DEFAULT '',
   pod_name      TEXT DEFAULT '',
   pod_leader_name TEXT DEFAULT '',
-  work_email    TEXT UNIQUE NOT NULL,
+  work_email    TEXT UNIQUE,
   buddy_name    TEXT DEFAULT '',
   resume_url    TEXT DEFAULT '',
   status        TEXT DEFAULT 'pending',

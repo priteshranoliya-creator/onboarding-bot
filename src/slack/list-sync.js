@@ -68,11 +68,6 @@ function register(app) {
         data[key] = v;
       }
 
-      if (!data.workEmail) {
-        console.warn('JOINER_SYNC: missing workEmail, skipping');
-        return;
-      }
-
       // Skip only genuinely dead entries — sync everything else (Pending, Offer Accepted, Confirmed, etc.)
       // so HR gets D-7→D-1 alerts even if they forgot to mark Confirmed.
       const SKIP_STATUSES = ['rejected', 'declined', 'not interested', 'withdrawn', 'offer declined'];

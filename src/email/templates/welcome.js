@@ -9,6 +9,11 @@ const {
 
 module.exports = function welcomeEmail(joiner, cfg) {
   const subject = `Welcome to devxlabs.ai, ${joiner.firstName}! 🚀`;
+  // Blank/unknown mode defaults to onsite — safer to over-inform than miss the lunch line.
+  const isOnline = (joiner.mode || '').toLowerCase().trim() === 'online';
+  const dayOneNote = isOnline
+    ? `💻 Reporting virtually — your buddy will connect with you on Slack on Day 1.`
+    : `🍽️ Please do not bring your lunch on ${joiner.joiningDay}. We have arranged an onboarding lunch for you.`;
 
   const header = htmlHeader(
     `Welcome aboard, ${joiner.firstName}! 🚀`,
@@ -55,7 +60,7 @@ module.exports = function welcomeEmail(joiner, cfg) {
     htmlCallout('#fffbeb', '#fde68a', `
       ${htmlSectionTitle('📌', 'Things to Note')}
       <ul style="margin:0;padding-left:18px;font-size:13px;color:#78350f;">
-        <li style="margin-bottom:6px;">🍽️ Please do not bring your lunch on ${joiner.joiningDay}. We have arranged an onboarding lunch for you.</li>
+        <li style="margin-bottom:6px;">${dayOneNote}</li>
         <li style="margin-bottom:6px;">💻 A work device will be provided for official purposes.</li>
         <li style="margin-bottom:6px;">📄 <strong>Action required:</strong> Please upload your required documents via <a href="${cfg.docUploadFormLink}" style="color:#92400e;font-weight:700;text-decoration:underline;">this form</a> before Day 1. <span style="color:#a16207;">(Skip if already done)</span></li>
       </ul>

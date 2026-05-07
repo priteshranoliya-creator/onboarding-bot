@@ -185,7 +185,7 @@ async function upsertJoiner(data) {
     [
       data.name || '', data.role || '', data.department || '',
       joiningDate, data.mode || '', data.podName || '',
-      data.podLeaderName || '', data.workEmail,
+      data.podLeaderName || '', data.workEmail || null,
       data.buddyName || '', data.resumeUrl || '',
       data.status || 'pending', data.notes || '',
     ]

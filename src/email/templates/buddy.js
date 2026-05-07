@@ -10,6 +10,7 @@ const {
 module.exports = function buddyEmail(joiner, cfg) {
   const buddyFirstName = (joiner.buddyName || '').split(' ')[0];
   const subject = `Joining Buddy Assignment — ${joiner.name} joins tomorrow`;
+  const isOnline = (joiner.mode || '').toLowerCase().trim() === 'online';
 
   const header = htmlHeader('Joining Buddy Assignment', `${joiner.name} is counting on you`);
 
@@ -17,11 +18,16 @@ module.exports = function buddyEmail(joiner, cfg) {
     'Be their first point of contact on Day 1.',
     'Introduce them to the team and nearby colleagues.',
     'Help them set up their workstation and tools.',
-    'Walk them through daily routines (standup, lunch, check-in/check-out).',
+    isOnline
+      ? 'Walk them through daily routines (standup, virtual coffee, daily check-in).'
+      : 'Walk them through daily routines (standup, lunch, check-in/check-out).',
     'Answer any questions they have in the first week.',
     'Make sure they feel welcome and included.',
-    '<strong>Check in with them at the end of the day.</strong>',
   ];
+
+  const welcomeIntro = isOnline
+    ? '<strong>Welcome & Onboarding Support</strong> — Personally welcome the new joiner on Day 1; be available on Slack throughout the day to support them.'
+    : '<strong>Welcome & Onboarding Support</strong> — Personally welcome the new joiner on Day 1; from coffee and lunch to evening tea, stick with your new bud.';
 
   const listItems = responsibilities.map(r =>
     `<li style="margin-bottom:7px;font-size:13px;color:#1e3a5f;">${r}</li>`
@@ -40,7 +46,7 @@ module.exports = function buddyEmail(joiner, cfg) {
 
     htmlAccentBlock('#2563eb', `
       <div style="font-weight:700;font-size:14px;color:#1e3a8a;margin-bottom:10px;">Role of a Joining Buddy</div>
-      <p style="margin:0 0 12px;font-size:13px;color:#1e3a5f;"><strong>Welcome & Onboarding Support</strong> — Personally welcome the new joiner on Day 1; from coffee and lunch to evening tea, stick with your new bud.</p>
+      <p style="margin:0 0 12px;font-size:13px;color:#1e3a5f;">${welcomeIntro}</p>
       <ol style="padding-left:18px;margin:0;">${listItems}</ol>
     `),
 
