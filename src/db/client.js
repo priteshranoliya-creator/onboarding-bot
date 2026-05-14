@@ -163,35 +163,78 @@ async function getSlackThreadInfo(workEmail) {
 
 async function upsertJoiner(data) {
   const joiningDate = data.joiningDate ? parseJoiningDate(data.joiningDate) : null;
+  const workEmail = data.workEmail || null;
 
-  const result = await query(
-    `INSERT INTO joiners (name, role, department, joining_date, mode, pod_name,
-       pod_leader_name, work_email, buddy_name, resume_url, status, notes)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
-     ON CONFLICT (work_email) DO UPDATE SET
-       name = EXCLUDED.name,
-       role = EXCLUDED.role,
-       department = EXCLUDED.department,
-       joining_date = EXCLUDED.joining_date,
-       mode = EXCLUDED.mode,
-       pod_name = EXCLUDED.pod_name,
-       pod_leader_name = EXCLUDED.pod_leader_name,
-       buddy_name = EXCLUDED.buddy_name,
-       resume_url = EXCLUDED.resume_url,
-       status = EXCLUDED.status,
-       notes = EXCLUDED.notes,
-       updated_at = NOW()
-     RETURNING id`,
-    [
-      data.name || '', data.role || '', data.department || '',
-      joiningDate, data.mode || '', data.podName || '',
-      data.podLeaderName || '', data.workEmail || null,
-      data.buddyName || '', data.resumeUrl || '',
-      data.status || 'pending', data.notes || '',
-    ]
-  );
-
-  const joinerId = result[0].id;
+  // Postgres treats every NULL as distinct, so ON CONFLICT (work_email) won't match
+  // when work_email is null. Fall back to matching on (lower(name), joining_date)
+  // so HR re-posts for joiners without a provisioned email don't create dupes.
+  let joinerId;
+  if (!workEmail) {
+    const existing = await query(
+      `SELECT id FROM joiners
+       WHERE LOWER(name) = LOWER($1) AND joining_date = $2 AND work_email IS NULL
+       LIMIT 1`,
+      [data.name || '', joiningDate]
+    );
+    if (existing.length) {
+      joinerId = existing[0].id;
+      await query(
+        `UPDATE joiners SET
+           name = $2, role = $3, department = $4, joining_date = $5, mode = $6,
+           pod_name = $7, pod_leader_name = $8, buddy_name = $9, resume_url = $10,
+           status = $11, notes = $12, updated_at = NOW()
+         WHERE id = $1`,
+        [
+          joinerId, data.name || '', data.role || '', data.department || '',
+          joiningDate, data.mode || '', data.podName || '',
+          data.podLeaderName || '', data.buddyName || '', data.resumeUrl || '',
+          data.status || 'pending', data.notes || '',
+        ]
+      );
+    } else {
+      const ins = await query(
+        `INSERT INTO joiners (name, role, department, joining_date, mode, pod_name,
+           pod_leader_name, work_email, buddy_name, resume_url, status, notes)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, NULL, $8, $9, $10, $11)
+         RETURNING id`,
+        [
+          data.name || '', data.role || '', data.department || '',
+          joiningDate, data.mode || '', data.podName || '',
+          data.podLeaderName || '', data.buddyName || '', data.resumeUrl || '',
+          data.status || 'pending', data.notes || '',
+        ]
+      );
+      joinerId = ins[0].id;
+    }
+  } else {
+    const result = await query(
+      `INSERT INTO joiners (name, role, department, joining_date, mode, pod_name,
+         pod_leader_name, work_email, buddy_name, resume_url, status, notes)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+       ON CONFLICT (work_email) DO UPDATE SET
+         name = EXCLUDED.name,
+         role = EXCLUDED.role,
+         department = EXCLUDED.department,
+         joining_date = EXCLUDED.joining_date,
+         mode = EXCLUDED.mode,
+         pod_name = EXCLUDED.pod_name,
+         pod_leader_name = EXCLUDED.pod_leader_name,
+         buddy_name = EXCLUDED.buddy_name,
+         resume_url = EXCLUDED.resume_url,
+         status = EXCLUDED.status,
+         notes = EXCLUDED.notes,
+         updated_at = NOW()
+       RETURNING id`,
+      [
+        data.name || '', data.role || '', data.department || '',
+        joiningDate, data.mode || '', data.podName || '',
+        data.podLeaderName || '', workEmail,
+        data.buddyName || '', data.resumeUrl || '',
+        data.status || 'pending', data.notes || '',
+      ]
+    );
+    joinerId = result[0].id;
+  }
 
   await query(
     `INSERT INTO joiner_pii (joiner_id, personal_email, phone, temp_password,
