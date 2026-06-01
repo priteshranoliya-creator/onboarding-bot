@@ -96,6 +96,7 @@ function checklistBlocks(joiner, state = {}) {
 
 function buddyDmBlocks(joiner) {
   const dateStr = formatLong(parseDate(joiner.joiningDate));
+  const isOnline = (joiner.mode || '').toLowerCase().trim() === 'online';
   return [
     {
       type: 'header',
@@ -117,12 +118,18 @@ function buddyDmBlocks(joiner) {
           '1. Be their first point of contact on Day 1\n' +
           '2. Introduce them to the team and nearby colleagues\n' +
           '3. Help them set up their workstation and tools\n' +
-          '4. Walk them through daily routines (standup, lunch, check-in/check-out)\n' +
+          (isOnline
+            ? '4. Walk them through daily routines (standup, daily check-in)\n'
+            : '4. Walk them through daily routines (standup, lunch, check-in/check-out)\n') +
           '5. Answer any questions they have in the first week\n' +
           '6. Make sure they feel welcome and included\n' +
           '7. Check in with them at the end of the day'
       ),
     },
+    ...(isOnline ? [{
+      type: 'context',
+      elements: [mrkdwn(`🍱 *Heads up:* ${joiner.name} is joining *remotely* — no need to arrange or order lunch for them on Day 1!`)],
+    }] : []),
     {
       type: 'context',
       elements: [mrkdwn('Thank you for helping make their onboarding experience great!')],

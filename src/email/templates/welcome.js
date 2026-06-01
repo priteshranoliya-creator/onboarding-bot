@@ -8,7 +8,7 @@ const {
 } = require('./components');
 
 module.exports = function welcomeEmail(joiner, cfg) {
-  const subject = `Welcome to devxlabs.ai, ${joiner.firstName}! 🚀`;
+  const subject = `Welcome to devx labs, ${joiner.firstName}! 🚀`;
   // Blank/unknown mode defaults to onsite — safer to over-inform than miss the lunch line.
   const isOnline = (joiner.mode || '').toLowerCase().trim() === 'online';
   const dayOneNote = isOnline
@@ -22,12 +22,14 @@ module.exports = function welcomeEmail(joiner, cfg) {
 
   const body = [
     htmlGreeting(joiner.firstName),
-    htmlP(`Welcome to <strong>devxlabs.ai</strong>! We're delighted to have you join the team and look forward to working together. Your journey with us starts tomorrow — here's everything you need. ✨`),
+    htmlP(`Welcome to <strong>devx labs</strong>! We're delighted to have you join the team and look forward to working together. Your journey with us starts tomorrow — here's everything you need. ✨`),
 
     htmlSectionTitle('📅', 'First Day Details'),
     htmlInfoCard([
       { label: 'Office Address', value: cfg.officeAddress },
-      { label: 'Reporting Time', value: cfg.reportingTime + ' <span style="color:#94a3b8;">(first day only)</span>' },
+      ...(!isOnline ? [
+        { label: 'Reporting Time', value: cfg.reportingTime + ' <span style="color:#94a3b8;">(first day only)</span>' },
+      ] : []),
       { label: 'Reporting Date', value: joiner.joiningDateLong },
       { label: 'Joining Buddy', value: joiner.buddyName },
       { label: 'HR Contact', value: cfg.hrContactName },

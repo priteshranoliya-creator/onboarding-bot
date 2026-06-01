@@ -50,6 +50,9 @@ module.exports = function buddyEmail(joiner, cfg) {
       <ol style="padding-left:18px;margin:0;">${listItems}</ol>
     `),
 
+    isOnline
+      ? htmlP("🍱 <strong>Heads up:</strong> " + joiner.firstName + " is joining <strong>remotely</strong> — no need to arrange or order lunch for them on Day 1!")
+      : '',
     htmlP("Thank you for being a great buddy!"),
     htmlSignature(cfg),
   ].join('');
