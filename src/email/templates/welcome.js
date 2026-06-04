@@ -57,6 +57,7 @@ module.exports = function welcomeEmail(joiner, cfg) {
     `<ul style="margin:0 0 24px 0;padding-left:20px;font-size:14px;color:#334155;">
       <li style="margin-bottom:8px;"><a href="${cfg.payrollLink}" style="color:#2563eb;text-decoration:underline;font-weight:500;">Razorpay Payroll Dashboard</a></li>
       <li style="margin-bottom:8px;"><a href="${cfg.slackLink}" style="color:#2563eb;text-decoration:underline;font-weight:500;">Slack Workspace</a></li>
+      <li style="margin-bottom:8px;"><a href="${cfg.plumHandbookLink}" style="color:#2563eb;text-decoration:underline;font-weight:500;">Plum Health Benefits</a></li>
     </ul>`,
 
     htmlCallout('#fffbeb', '#fde68a', `
