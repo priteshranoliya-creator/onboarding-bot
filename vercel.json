@@ -8,8 +8,5 @@
       "runtime": "@vercel/node@5.0.0"
     }
   },
-  "crons": [
-    { "path": "/api/cron/daily-onboarding", "schedule": "30 3 * * *" },
-    { "path": "/api/cron/smart-alerts", "schedule": "0 5 * * 1" }
-  ]
+  "crons": []
 }

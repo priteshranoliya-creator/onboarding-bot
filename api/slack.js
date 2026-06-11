@@ -1,5 +1,1 @@
-// Vercel serverless handler for all Slack events, actions, and commands.
-// Slack sends everything to this single endpoint.
-const { receiver } = require('../src/bolt');
-
-module.exports = receiver.app;
+module.exports = (req, res) => res.status(410).json({ status: 'decommissioned', message: 'Onboarding bot has been retired.' });
